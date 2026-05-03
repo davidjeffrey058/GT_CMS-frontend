@@ -16,7 +16,7 @@ const App = () => {
                 </div>
                 <div className="flex_column main_content">
                     <NavBar /> 
-                    <Outlet />
+                    <Outlet/>
                 </div>
             </div>
         </div>

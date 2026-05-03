@@ -219,6 +219,10 @@ input[type="checkbox"]{
     width: 100%;
 }
 
+.main_content > :nth-child(2){
+    padding: 20px;
+}
+
 /* navbar */
 .navbar {
     gap: 10px;
@@ -383,5 +387,9 @@ input[type="checkbox"]{
     width: 40px;
     height: 40px;
    }
+
+   .main_content > :nth-child(2){
+    padding: 10px;
+    }
 
 }
