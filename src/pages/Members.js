@@ -1,5 +1,6 @@
 import { useSearchParams } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
+import useDebounce from "../hooks/useDebounce";
 
 const Members = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -7,38 +8,48 @@ const Members = () => {
   const search = searchParams.get("search") || "";
   const page = Number(searchParams.get("page")) || 1;
 
-  const statusIndicator = (status) => {
-    if (status === "active") return "success";
-    if (status === "inactive") return "danger";
-    return "secondary";
-  };
-
   const { result, error, isPending } = useFetch(
-    `http://localhost:4000/api/members?search=${search}&page=${page}&limit=5`
+    `http://localhost:4000/api/members?search=${useDebounce(search, 500)}&page=${page}`
   );
+
+  const statusIndicator = (status) => {
+      if (status === "active") return "success";
+      if (status === "inactive") return "danger";
+      return "secondary";
+  };
 
   return (
     <div>
       <div className="d-flex justify-content-between mb-3">
         <h4>Members</h4>
-        <button className="btn btn-primary">Add Member</button>
+        <button type="button" className="btn btn-primary btn-sm d-flex gap-2 align-items-center"data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+          <span class="material-symbols-outlined">
+            person_add
+          </span>
+          Add Member
+        </button>
       </div>
 
       {/* SEARCH INPUT */}
-      <input
-        className="form-control mb-3"
-        placeholder="Search members..."
-        value={search}
-        onChange={(e) => {
-          const value = e.target.value;
+      <div className="d-flex mb-3 gap-2">
+        <input
+          className="form-control "
+          placeholder="Search members..."
+          value={search}
+          onChange={(e) => {
+            const value = e.target.value;
 
-          setSearchParams((prev) => {
-            prev.set("search", value);
-            prev.set("page", 1); // reset page on new search
-            return prev;
-          });
-        }}
-      />
+            setSearchParams((prev) => {
+              prev.set("search", value);
+              prev.set("page", 1); // reset page on new search
+              return prev;
+            });
+          }}
+        />
+        <button title="Filter list" className="btn btn-outline-secondary btn-sm">
+          <span className="material-symbols-outlined">filter_list</span>
+        </button>
+      </div>
 
       <div className="card shadow min-vh-50">
         {result && (
@@ -66,7 +77,7 @@ const Members = () => {
                       />
                     </td>
                     <td>{member.full_name}</td>
-                    <td>{member.gender}</td>
+                    <td className="text-capitalize">{member.gender}</td>
                     <td>{member.phone}</td>
                     <td>
                       <span
@@ -81,16 +92,20 @@ const Members = () => {
                 ))}
               </tbody>
             </table>
-
+            {result.data.length === 0 && (
+              <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "200px" }}>
+                <p>No members found.</p>
+              </div>
+            )}
             <div className="d-flex justify-content-between align-items-center mt-3">
-              <p>
+              <p className="fw-semibold">
                 {result.data.length} results of {result.meta.total} members
               </p>
 
               <div className="d-flex gap-3">
                 {/* PREVIOUS */}
                 <button
-                  className="btn btn-outline-primary"
+                  className="btn btn-outline-secondary btn-sm"
                   disabled={page <= 1}
                   onClick={() => {
                     setSearchParams((prev) => {
@@ -103,17 +118,22 @@ const Members = () => {
                 </button>
 
                 {/* CURRENT PAGE */}
-                <input
-                  style={{ width: "40px", textAlign: "center" }}
-                  type="text"
-                  className="form-control"
-                  value={page}
-                  readOnly
-                />
-
+                <form >
+                  <input
+                    style={{ width: "40px", textAlign: "center" }}
+                    type="text"
+                    className="form-control"
+                    value={page}
+                    onChange={(e) => setSearchParams((prev) => {
+                      const value = e.target.value;
+                      prev.set("page", value);
+                      return prev;
+                    })}
+                  />
+                </form>
                 {/* NEXT */}
                 <button
-                  className="btn btn-outline-primary"
+                  className="btn btn-outline-secondary btn-sm"
                   disabled={page >= result.meta.pages}
                   onClick={() => {
                     setSearchParams((prev) => {
@@ -129,12 +149,13 @@ const Members = () => {
           </div>
         )}
 
+  
         {isPending && (
-          <div
-            style={{ minHeight: "300px" }}
-            className="card-body d-flex justify-content-center align-items-center"
-          >
-            <p>Loading...</p>
+          <div class="d-flex justify-content-center align-items-center"
+          style={{ minHeight: "300px" }}>
+            <div class="spinner-border" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
           </div>
         )}
 
@@ -147,6 +168,25 @@ const Members = () => {
           </div>
         )}
       </div>
+
+      <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="staticBackdropLabel">Add a New Member</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              ...
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-primary">Add Member</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 };

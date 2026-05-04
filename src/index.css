@@ -1,3 +1,8 @@
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 :root{
     --primary-color: #002366;
     --primary-light: #c5daff;
@@ -237,9 +242,17 @@ input[type="checkbox"]{
     height: 35px;
     background-color: var(--light-grey);
     border-radius: 50%;
-    margin-right: auto;
-    /* margin-inline: 10px auto; */
 }
+
+/* .prf{
+    margin-left: auto;
+    transition: all 0.3s ease;
+}
+
+.prf:hover{
+    background-color: var(--background-color);
+    cursor: pointer;
+} */
 
 .sidebar_toggle{
     user-select: none;
