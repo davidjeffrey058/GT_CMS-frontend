@@ -244,15 +244,11 @@ input[type="checkbox"]{
     border-radius: 50%;
 }
 
-/* .prf{
-    margin-left: auto;
-    transition: all 0.3s ease;
+.gry .form-control{
+    background-color: var(--background-color);
+    margin-bottom: 20px;
 }
 
-.prf:hover{
-    background-color: var(--background-color);
-    cursor: pointer;
-} */
 
 .sidebar_toggle{
     user-select: none;

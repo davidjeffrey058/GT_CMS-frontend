@@ -1,6 +1,7 @@
 import { useSearchParams } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
 import useDebounce from "../hooks/useDebounce";
+import AddMemberModal from "../components/addMemberModal";
 
 const Members = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -31,7 +32,7 @@ const Members = () => {
       </div>
 
       {/* SEARCH INPUT */}
-      <div className="d-flex mb-3 gap-2">
+      <div className="d-flex mb-3 gap-3">
         <input
           className="form-control "
           placeholder="Search members..."
@@ -169,23 +170,8 @@ const Members = () => {
         )}
       </div>
 
-      <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="staticBackdropLabel">Add a New Member</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              ...
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-              <button type="button" class="btn btn-primary">Add Member</button>
-            </div>
-          </div>
-        </div>
-      </div>
+        {/* ADD MEMBER MODAL */}
+        <AddMemberModal />
 
     </div>
   );

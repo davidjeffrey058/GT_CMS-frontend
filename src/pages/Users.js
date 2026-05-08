@@ -1,10 +1,24 @@
+import useFetch from "../hooks/useFetch";
+
 const Users = () => {
+
+  const { result, error, isPending } = useFetch(
+    `http://localhost:4000/api/users`
+  );
+
+  const roleIndicator = (role) => {
+    if (role === "admin") return "danger";
+    if (role === "pastor") return "primary";
+    if (role === "finance") return "success";
+    return "secondary";
+  }
+
     return ( 
         <div>
       <h4 className="mb-3">Users</h4>
 
-      <div className="card shadow">
-        <div className="card-body">
+      <div className="card shadow min-vh-50">
+        {result && <div className="card-body">
           <table className="table">
             <thead>
               <tr>
@@ -14,13 +28,33 @@ const Users = () => {
             </thead>
 
             <tbody>
-              <tr>
-                <td>admin</td>
-                <td><span className="badge bg-primary">Admin</span></td>
-              </tr>
+             {result.data.map((user) => (
+                <tr key={user.id}>
+                  <td>{user.email}</td>
+                  <td><span className={`badge bg-${roleIndicator(user.role)}`}>{user.role}</span></td>
+                </tr>
+              ))}
             </tbody>
           </table>
-        </div>
+        </div>}
+
+        {isPending && (
+          <div class="d-flex justify-content-center align-items-center"
+          style={{ minHeight: "300px" }}>
+            <div class="spinner-border" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        )}
+
+        {error && (
+          <div
+            style={{ minHeight: "300px" }}
+            className="card-body d-flex justify-content-center align-items-center"
+          >
+            <p>{error}</p>
+          </div>
+        )}
       </div>
     </div>
      );
