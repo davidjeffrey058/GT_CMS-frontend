@@ -2,6 +2,10 @@ import { useState } from "react";
 
 const AddMemberModal = () => {
 
+    // const [response, setResponse] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [err, setErr] = useState(null);
+
     const departments = [
     'Choir',
       'Ushering',
@@ -15,6 +19,7 @@ const AddMemberModal = () => {
       'Technical'
     ];
     const educationalLevels = ['none', 'primary','jhs', 'shs', 'diploma', 'degree', 'postgraduate','master\'s degree', 'phd'];
+    const maritalStatusOptions = ['single', 'married', 'divorced'];
     
     const [selectedDepartments, setSelectedDepartments] = useState([]);
     const [fullName, setFullName] = useState("");
@@ -26,7 +31,8 @@ const AddMemberModal = () => {
     const [occupation, setOccupation] = useState("");
     const [residentialAddress, setResidentialAddress] = useState("");
     const [baptismStatus, setBaptismStatus] = useState("none");
-    const [dateBaptized, setDateBaptized] = useState("");
+    const [dateBaptized, setDateBaptized] = useState(null);
+    const [maritalStatus, setMaritalStatus] = useState('single');
 
     const handleCheckboxChange = (department) => {
 
@@ -50,20 +56,54 @@ const AddMemberModal = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const newMember = {
-            fullName,
-            email,
+        setIsLoading(true);
+        const abortCont = new AbortController();
+        
+        fetch('http://localhost:4000/api/members', {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            full_name: fullName,
+            dob: dateOfBirth,
             gender,
-            dateOfBirth,
             phone,
-            educationalLevel,
+            email,
+            address: residentialAddress,
             occupation,
-            residentialAddress,
-            baptismStatus,
-            dateBaptized,
-            selectedDepartments
-        };
-        console.log(newMember);
+            baptism: {
+              status: baptismStatus,
+              date: dateBaptized
+            },
+            educational_level: educationalLevel,
+            marital_satus: maritalStatus,
+            departments: selectedDepartments
+          }),
+          signal: abortCont.signal
+        })
+        .then(res => {
+          if(!res.ok){
+            
+            throw Error('Unable to add member')
+          }
+          return res.json();
+        })
+        .then((data) => {
+          console.log(data)
+          window.alert(data)
+        })
+        .catch(err => {
+          if(err.name === 'AbortError'){
+              console.log('fetch aborted');
+          } else {
+              setErr(err.message);
+              setIsLoading(false);
+              console.log(err)
+          }
+        })
+
+        return () => abortCont.abort();
     };
 
     return ( 
@@ -72,7 +112,7 @@ const AddMemberModal = () => {
           <div class="modal-dialog modal-lg">
             <div class="modal-content">
               <div class="modal-header">
-                <h1 class="modal-title fs-5" id="staticBackdropLabel">Add a New Member</h1>
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Add New Member</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body">
@@ -82,7 +122,7 @@ const AddMemberModal = () => {
                     <div className="col-lg">
                       <label>Full Name</label>
                       <input type="text" class="form-control" required  
-                      placeholder="First Name, Middle Name, Last Name"
+                      placeholder="First Name, Middle Name, Surname"
                       value={fullName}
                       onChange={(e) =>{
                         setFullName(e.target.value.toUpperCase());
@@ -146,12 +186,12 @@ const AddMemberModal = () => {
                     </div>
                     
                     <div className="col">
-                    <label>Baptism status</label>
-                    <select class="form-control" required value={baptismStatus} onChange={(e) => setBaptismStatus(e.target.value)}>
-                      <option value="none">Not Baptized</option>
-                      <option value="water">Water Baptized</option>
-                      <option value="holy_ghost">Holy Spirit Baptized</option>
-                    </select>
+                      <label>Baptism status</label>
+                      <select class="form-control" required value={baptismStatus} onChange={(e) => setBaptismStatus(e.target.value)}>
+                        <option value="none">Not Baptized</option>
+                        <option value="water">Water Baptized</option>
+                        <option value="holy_ghost">Holy Spirit Baptized</option>
+                      </select>
                     </div>
 
                     <div className="col">
@@ -165,8 +205,8 @@ const AddMemberModal = () => {
                   </div>
 
                  
-                    <label className="mb-2">Departments</label>                  
-                  <div className="d-flex gap-3 flex-wrap">
+                  <label className="mb-2">Departments</label>                  
+                  <div className="d-flex gap-3 flex-wrap mb-3">
                     {departments.map((department, index) => (
                       <div key={department} className="form-check">
                         <input
@@ -178,9 +218,28 @@ const AddMemberModal = () => {
                           checked={selectedDepartments.includes(department)}
                           onChange={() => handleCheckboxChange(department)}
                         />
-                        <label className="btn btn-outline-dark" htmlFor={`btn-check-outlined-${index + 1}`}>
+                        <label className="btn btn-outline-dark"
+                        style={{fontWeight: 'normal'}}
+                         htmlFor={`btn-check-outlined-${index + 1}`}>
                           {department}
                         </label>
+                      </div>
+                    ))}
+                  </div>
+
+                  <label >Marital Status</label>
+                  <div className="d-flex gap-4">
+                    {maritalStatusOptions.map((option, index) => (
+                       <div key={index} className="form-check">
+                        <input className="form-check-input" name="radioDefault" 
+                        type="radio" id={`radioDefault${index}`}
+                        value={option}
+                        checked={maritalStatus === option}
+                        onChange={(e) => {setMaritalStatus(e.target.value)}}
+                        />
+                        <label className="form-check-label"
+                        style={{fontWeight: 'normal'}} 
+                        htmlFor={`radioDefault${index}`}>{option}</label>
                       </div>
                     ))}
                   </div>
@@ -191,8 +250,11 @@ const AddMemberModal = () => {
 
               </div>
               <div class="modal-footer">
+                {err && <div class="alert alert-danger me-auto" role="alert">
+                  {err}
+                </div>}
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-primary">Add Member</button>
+                <button disabled={isLoading} type="submit" class="btn btn-primary">Add Member</button>
               </div>
             </div>
           </div>

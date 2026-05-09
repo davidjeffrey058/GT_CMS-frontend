@@ -249,6 +249,11 @@ input[type="checkbox"]{
     margin-bottom: 20px;
 }
 
+.gry label{
+    font-weight: 500;
+    /* margin-bottom: 10px; */
+}
+
 
 .sidebar_toggle{
     user-select: none;
