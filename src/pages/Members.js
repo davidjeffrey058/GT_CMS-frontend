@@ -5,18 +5,21 @@ import AddMemberModal from "../components/addMemberModal";
 import MemberDetails from "../components/memberDetails";
 import { useState } from "react";
 import ErrorComponent from "../components/errorComponent";
+import { memberStatus } from "../util/constants"
+
 
 const Members = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const search = searchParams.get("search") || "";
   const page = Number(searchParams.get("page")) || 1;
+  const selectedMemberStatus = searchParams.get("status") || "";
 
   const [selectedMember, setSelectedMember] = useState(null)
   const debounceSearch = useDebounce(search, 500)
 
   const { result, error, isPending } = useFetch(
-    `http://localhost:4000/api/members?search=${debounceSearch}&page=${page}`
+    `http://localhost:4000/api/members?search=${debounceSearch}&page=${page}&status=${selectedMemberStatus}`
   );
 
   const statusIndicator = (status) => {
@@ -24,6 +27,8 @@ const Members = () => {
       if (status === "inactive") return "danger";
       return "secondary";
   };
+
+  const resetSelectedMember = () => setSelectedMember(null);
 
   return (
     <div>
@@ -39,6 +44,11 @@ const Members = () => {
 
       {/* SEARCH INPUT */}
       <div className="d-flex mb-3 gap-3">
+        <div className="d-flex gap-2 export">
+          <button disabled className="btn btn-success btn-sm">Excel</button>
+          <button disabled className="btn btn-danger btn-sm">PDF</button>
+        </div>
+
         <input
           className="form-control "
           placeholder="Search members..."
@@ -54,10 +64,31 @@ const Members = () => {
             });
           }}
         />
-        <button title="Filter list" className="btn btn-outline-secondary btn-sm">
+        {/* <button title="Filter list" className="btn btn-outline-secondary btn-sm">
           <span className="material-symbols-outlined">filter_list</span>
-        </button>
+        </button> */}
+        <div className="d-flex gap-2 ">
+            {memberStatus.map((memSta, index) => (
+              <button key={index} className={`btn ${memSta === selectedMemberStatus ? 'btn-secondary': 'btn-outline-secondary'} btn-sm`}
+                onClick={() => {
+                  setSearchParams((prev) => {
+                    const params = new URLSearchParams(prev);
+                    if(memSta === selectedMemberStatus){
+                      params.set("status", '');
+                      return params;
+                    }
+                    params.set("search", '');
+                    params.set("page", 1);
+                    params.set("status", memSta);
+                    return params;
+                  })
+                }}
+              >{memSta}</button>
+            ))}
+        </div>
       </div>
+
+      
 
           {/* MEMBER */}
       <div className="card shadow min-vh-50">
@@ -76,7 +107,7 @@ const Members = () => {
 
               <tbody>
                 {result.data.map((member) => (
-                  <tr style={{cursor: 'pointer',}} key={member._id}  data-bs-toggle="offcanvas" 
+                  <tr className={selectedMember && (selectedMember === member._id)? 'table-active': ''} style={{cursor: 'pointer',}} key={member._id}  data-bs-toggle="offcanvas" 
                   data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"
                   onClick={() => setSelectedMember(member._id)}
                   >
@@ -180,7 +211,7 @@ const Members = () => {
         {/* ADD MEMBER MODAL */}
         <AddMemberModal />
 
-        <MemberDetails memberId={selectedMember}/>
+        <MemberDetails memberId={selectedMember} resetSelectedMember={resetSelectedMember}/>
 
     </div>
   );

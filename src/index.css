@@ -235,6 +235,10 @@ input[type="checkbox"]{
     padding: 10px 20px;
     border-bottom: 1px solid var(--light-grey);
     background-color: white;
+    position: sticky;
+    top: 0;
+    right: 0;
+    z-index: 1;
 }
 
 .navbar img{
@@ -259,6 +263,10 @@ input[type="checkbox"]{
     user-select: none;
     cursor: pointer;
     display: none;
+}
+
+.export button{
+    width: 65px;
 }
 
 @media (max-width: 1024px) {

@@ -2,7 +2,7 @@ import useFetch from '../hooks/useFetch';
 import { educationalLevels, maritalStatusOptions } from '../util/constants';
 import ErrorComponent from './errorComponent';
 
-const MemberDetails = ({memberId, }) => {
+const MemberDetails = ({memberId, resetSelectedMember}) => {
     console.log(memberId)
     
     const {
@@ -16,7 +16,10 @@ const MemberDetails = ({memberId, }) => {
         <div className="offcanvas offcanvas-end" tabIndex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
           <div className="offcanvas-header">
             <h5 className="offcanvas-title" id="offcanvasRightLabel">Member Details</h5>
-            <button type="button" className="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            <button type="button" className="btn-close" 
+            data-bs-dismiss="offcanvas" aria-label="Close"
+            onClick={() => resetSelectedMember()}
+            ></button>
           </div>
 
           {memData && <div className="offcanvas-body gry">

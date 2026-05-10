@@ -13,8 +13,11 @@ const maritalStatusOptions = ['single', 'married', 'divorced'];
       'Technical'
     ];
 
+const memberStatus = ['active', 'inactive', 'visitor'];
+
 export {
     educationalLevels,
     maritalStatusOptions,
-    departments
+    departments,
+    memberStatus
 }
