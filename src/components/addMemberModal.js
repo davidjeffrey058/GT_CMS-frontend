@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { educationalLevels, maritalStatusOptions, departments } from '../util/constants'
 
 const AddMemberModal = () => {
 
@@ -6,21 +7,6 @@ const AddMemberModal = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [err, setErr] = useState(null);
 
-    const departments = [
-    'Choir',
-      'Ushering',
-      'Media',
-      'Children Ministry',
-      'Youth Ministry',
-      'Prayer Team',
-      'Protocol',
-      'Evangelism',
-      'Sanctuary',
-      'Technical'
-    ];
-    const educationalLevels = ['none', 'primary','jhs', 'shs', 'diploma', 'degree', 'postgraduate','master\'s degree', 'phd'];
-    const maritalStatusOptions = ['single', 'married', 'divorced'];
-    
     const [selectedDepartments, setSelectedDepartments] = useState([]);
     const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
@@ -31,8 +17,23 @@ const AddMemberModal = () => {
     const [occupation, setOccupation] = useState("");
     const [residentialAddress, setResidentialAddress] = useState("");
     const [baptismStatus, setBaptismStatus] = useState("none");
-    const [dateBaptized, setDateBaptized] = useState(null);
+    const [dateBaptized, setDateBaptized] = useState("");
     const [maritalStatus, setMaritalStatus] = useState('single');
+
+    const resetForm = () => {
+        setFullName("");
+        setEmail("");
+        setGender("");
+        setDateOfBirth("");
+        setPhone("");
+        setEducationalLevel("");
+        setOccupation("");
+        setResidentialAddress("");
+        setBaptismStatus("none");
+        setDateBaptized("");
+        setMaritalStatus("single");
+        setSelectedDepartments([]);
+    }
 
     const handleCheckboxChange = (department) => {
 
@@ -54,12 +55,14 @@ const AddMemberModal = () => {
         }
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        setIsLoading(true);
-        const abortCont = new AbortController();
-        
-        fetch('http://localhost:4000/api/members', {
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+
+      setIsLoading(true);
+      setErr(null);
+
+      try {
+        const res = await fetch('http://localhost:4000/api/members', {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -74,54 +77,57 @@ const AddMemberModal = () => {
             occupation,
             baptism: {
               status: baptismStatus,
-              date: dateBaptized
+              date: baptismStatus === "none" ? null : dateBaptized
             },
             educational_level: educationalLevel,
-            marital_satus: maritalStatus,
+            marital_status: maritalStatus,
             departments: selectedDepartments
-          }),
-          signal: abortCont.signal
-        })
-        .then(res => {
-          if(!res.ok){
-            
-            throw Error('Unable to add member')
-          }
-          return res.json();
-        })
-        .then((data) => {
-          console.log(data)
-          window.alert(data)
-        })
-        .catch(err => {
-          if(err.name === 'AbortError'){
-              console.log('fetch aborted');
-          } else {
-              setErr(err.message);
-              setIsLoading(false);
-              console.log(err)
-          }
-        })
+          })
+        });
 
-        return () => abortCont.abort();
+        if (!res.ok) {
+          throw new Error("Unable to add member");
+        }
+
+        const data = await res.json();
+
+        console.log(data);
+
+        window.alert(data.message || "Member added successfully");
+
+        // Optional reset
+        resetForm();
+
+      } catch (err) {
+        console.log(err);
+        setErr(err.message);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     return ( 
         <form onSubmit={handleSubmit}>
-        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-          <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h1 class="modal-title fs-5" id="staticBackdropLabel">Add New Member</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div className="modal fade" id="staticBackdrop" data-bs-backdrop="static" 
+        data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+          <div className="modal-dialog modal-lg">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h1 className="modal-title fs-5" id="staticBackdropLabel">Add New Member</h1>
+                <button type="button" className="btn-close"
+                onClick={() => {
+                  resetForm();
+                  err && setErr(null)
+                }} 
+                data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
-              <div class="modal-body">
+              <div className="modal-body">
 
                 <div className="gry">
                   <div className="row">
                     <div className="col-lg">
                       <label>Full Name</label>
-                      <input type="text" class="form-control" required  
+                      <input type="text" className="form-control" required  
                       placeholder="First Name, Middle Name, Surname"
                       value={fullName}
                       onChange={(e) =>{
@@ -132,7 +138,7 @@ const AddMemberModal = () => {
 
                     <div className="col">
                       <label>Email</label>
-                      <input type="email" class="form-control" required
+                      <input type="email" className="form-control" required
                       placeholder="user@example.com"
                       value={email}
                       onChange={(e) =>{
@@ -145,49 +151,55 @@ const AddMemberModal = () => {
                   <div className="row">
                     <div className="col">
                         <label>Gender</label>
-                        <select class="form-control" required value={gender} onChange={(e) => setGender(e.target.value)}>
+                        <select className="form-control" required value={gender} onChange={(e) => setGender(e.target.value)}>
                             <option value="">--</option>
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
+                            <option value="male">MALE</option>
+                            <option value="female">FEMALE</option>
                         </select>
                     </div>
 
                     <div className="col">
                         <label>Date of Birth</label>
-                        <input type="date" class="form-control" required value={dateOfBirth} onChange={(e) => setDateOfBirth(e.target.value)}/>
+                        <input type="date" className="form-control" required value={dateOfBirth}
+                         onChange={(e) => setDateOfBirth(e.target.value)}/>
                     </div>
 
                     <div className="col-lg">
                         <label>Phone</label>
-                        <input type="tel" class="form-control" placeholder="Eg. 0200000000" value={phone} onChange={(e) => setPhone(e.target.value)}/>
+                        <input type="tel" className="form-control" placeholder="Eg. 0200000000"
+                         value={phone} onChange={(e) => setPhone(e.target.value)}/>
                     </div>
                   </div>
 
                   <div className="row">
                     <div className="col">
                         <label>Educational Level</label>
-                        <select class="form-control" required value={educationalLevel} onChange={(e) => setEducationalLevel(e.target.value)}>
+                        <select className="form-control" required value={educationalLevel}
+                         onChange={(e) => setEducationalLevel(e.target.value)}>
                             {educationalLevels.map(level => (
-                                <option key={level} value={level}>{level.charAt(0).toUpperCase() + level.slice(1)}</option>
+                                <option key={level} value={level}>{level.toUpperCase()}</option>
                             ))}
                         </select>
                     </div>
 
                     <div className="col-lg">
                       <label>Occupation</label>
-                      <input type="text" class="form-control" value={occupation} onChange={(e) => setOccupation(e.target.value)}/>
+                      <input type="text" className="form-control" value={occupation} 
+                      onChange={(e) => setOccupation(e.target.value.toUpperCase())}/>
                     </div>
                   </div>
 
                   <div className="row">
                     <div className="col-lg">
                       <label>Residential Address</label>
-                      <input type="text" class="form-control" required placeholder="House No., Street, City" value={residentialAddress} onChange={(e) => setResidentialAddress(e.target.value)}/>
+                      <input type="text" className="form-control" required placeholder="House No., Street, City"
+                       value={residentialAddress} onChange={(e) => setResidentialAddress(e.target.value)}/>
                     </div>
                     
                     <div className="col">
                       <label>Baptism status</label>
-                      <select class="form-control" required value={baptismStatus} onChange={(e) => setBaptismStatus(e.target.value)}>
+                      <select className="form-control" required value={baptismStatus}
+                       onChange={(e) => setBaptismStatus(e.target.value)}>
                         <option value="none">Not Baptized</option>
                         <option value="water">Water Baptized</option>
                         <option value="holy_ghost">Holy Spirit Baptized</option>
@@ -237,7 +249,7 @@ const AddMemberModal = () => {
                         checked={maritalStatus === option}
                         onChange={(e) => {setMaritalStatus(e.target.value)}}
                         />
-                        <label className="form-check-label"
+                        <label className="form-check-label text-capitalize"
                         style={{fontWeight: 'normal'}} 
                         htmlFor={`radioDefault${index}`}>{option}</label>
                       </div>
@@ -249,12 +261,25 @@ const AddMemberModal = () => {
                 
 
               </div>
-              <div class="modal-footer">
-                {err && <div class="alert alert-danger me-auto" role="alert">
+
+              <div className="modal-footer">
+                {err && <div className="alert alert-danger me-auto" role="alert">
                   {err}
                 </div>}
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button disabled={isLoading} type="submit" class="btn btn-primary">Add Member</button>
+
+                <button type="button" className="btn btn-secondary"
+                  onClick={() => {
+                    resetForm();
+                    err && setErr(null);
+                  }}
+                 data-bs-dismiss="modal">Cancel</button>
+                <button
+                  disabled={isLoading}
+                  type="submit"
+                  className="btn btn-primary"
+                >
+                  {isLoading ? "Adding..." : "Add Member"}
+                </button>
               </div>
             </div>
           </div>

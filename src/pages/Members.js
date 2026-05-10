@@ -2,6 +2,9 @@ import { useSearchParams } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
 import useDebounce from "../hooks/useDebounce";
 import AddMemberModal from "../components/addMemberModal";
+import MemberDetails from "../components/memberDetails";
+import { useState } from "react";
+import ErrorComponent from "../components/errorComponent";
 
 const Members = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -9,8 +12,11 @@ const Members = () => {
   const search = searchParams.get("search") || "";
   const page = Number(searchParams.get("page")) || 1;
 
+  const [selectedMember, setSelectedMember] = useState(null)
+  const debounceSearch = useDebounce(search, 500)
+
   const { result, error, isPending } = useFetch(
-    `http://localhost:4000/api/members?search=${useDebounce(search, 500)}&page=${page}`
+    `http://localhost:4000/api/members?search=${debounceSearch}&page=${page}`
   );
 
   const statusIndicator = (status) => {
@@ -24,7 +30,7 @@ const Members = () => {
       <div className="d-flex justify-content-between mb-3">
         <h4>Members</h4>
         <button type="button" className="btn btn-primary btn-sm d-flex gap-2 align-items-center"data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-          <span class="material-symbols-outlined">
+          <span className="material-symbols-outlined">
             person_add
           </span>
           Add Member
@@ -41,9 +47,10 @@ const Members = () => {
             const value = e.target.value;
 
             setSearchParams((prev) => {
-              prev.set("search", value);
-              prev.set("page", 1); // reset page on new search
-              return prev;
+              const params = new URLSearchParams(prev);
+              params.set("search", value);
+              params.set("page", 1);
+              return params;
             });
           }}
         />
@@ -52,10 +59,11 @@ const Members = () => {
         </button>
       </div>
 
+          {/* MEMBER */}
       <div className="card shadow min-vh-50">
         {result && (
           <div className="card-body">
-            <table className="table table-hover">
+            <table className="table table-hover align-middle">
               <thead className="table-light">
                 <tr>
                   <th>Image</th>
@@ -68,13 +76,19 @@ const Members = () => {
 
               <tbody>
                 {result.data.map((member) => (
-                  <tr key={member.id}>
+                  <tr style={{cursor: 'pointer',}} key={member._id}  data-bs-toggle="offcanvas" 
+                  data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"
+                  onClick={() => setSelectedMember(member._id)}
+                  >
                     <td>
                       <img
-                        src=""
-                        alt="Photo"
+                        src={member.photo || `/images/${(member.gender === 'male')? 'man.png':'woman.png'}`}
+                        onError={(e) => {
+                          e.target.src = '/images/broken-image.png';
+                        }}
+                        alt="..."
                         className="img-fluid rounded-circle"
-                        style={{ width: "50px", height: "50px" }}
+                        style={{ width: "40px", height: "40px" }}
                       />
                     </td>
                     <td>{member.full_name}</td>
@@ -152,26 +166,21 @@ const Members = () => {
 
   
         {isPending && (
-          <div class="d-flex justify-content-center align-items-center"
+          <div className="d-flex justify-content-center align-items-center"
           style={{ minHeight: "300px" }}>
-            <div class="spinner-border" role="status">
-              <span class="visually-hidden">Loading...</span>
+            <div className="spinner-border" role="status">
+              <span className="visually-hidden">Loading...</span>
             </div>
           </div>
         )}
 
-        {error && (
-          <div
-            style={{ minHeight: "300px" }}
-            className="card-body d-flex justify-content-center align-items-center"
-          >
-            <p>{error}</p>
-          </div>
-        )}
+        {error && ( <ErrorComponent errorMessage={error} ContainerHeight="300px"/> )}
       </div>
 
         {/* ADD MEMBER MODAL */}
         <AddMemberModal />
+
+        <MemberDetails memberId={selectedMember}/>
 
     </div>
   );

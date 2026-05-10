@@ -1,5 +1,5 @@
 import {toggleDrawer} from '../util/methods';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 
 const NavBar = () => {
     return ( 
@@ -11,27 +11,27 @@ const NavBar = () => {
             {/* Profile Dropdown */}
             <div style={{marginLeft: "auto"}} className="dropdown">
                  <div className='d-flex align-items-center dropdown-toggle' role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="" alt="profile" />
+                    <img src="/images/user.png" alt="profile" />
                 </div>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item d-flex align-items-center gap-2" href="#">
-                        <span class="material-symbols-outlined">
+                <ul className="dropdown-menu dropdown-menu-end">
+                    <li><div className="dropdown-item d-flex align-items-center gap-2">
+                        <span className="material-symbols-outlined">
                             person
                         </span>
                         My Profile
-                    </a></li>
-                    <li><a class="dropdown-item d-flex align-items-center gap-2" href="#">
-                        <span class="material-symbols-outlined">
+                    </div></li>
+                    <li><div className="dropdown-item d-flex align-items-center gap-2">
+                        <span className="material-symbols-outlined">
                             settings
                         </span>
                         Settings
-                    </a></li>
-                    <li><a class="dropdown-item d-flex align-items-center gap-2" href="#">
-                        <span class="material-symbols-outlined">
+                    </div></li>
+                    <li><div className="dropdown-item d-flex align-items-center gap-2">
+                        <span className="material-symbols-outlined">
                             logout
                         </span>
                         Logout
-                    </a></li>
+                    </div></li>
                     {/* <Link to="/login" className="dropdown-item d-flex align-items-center gap-2">
                         <span class="material-symbols-outlined">
                             logout

@@ -22,7 +22,7 @@ export default function Sidebar() {
                 className='nav_link'
                 to={item.path}
             >
-                <span class="material-symbols-outlined">{item.icon}</span>
+                <span className="material-symbols-outlined">{item.icon}</span>
                 <p>{item.name}</p>
             </NavLink>
         ))}
