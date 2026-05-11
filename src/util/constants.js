@@ -1,4 +1,4 @@
-const educationalLevels = ['none', 'primary','jhs', 'shs', 'diploma', 'degree', 'postgraduate','master\'s degree', 'phd'];
+const educationalLevels = ['none', 'primary','jhs', 'shs', 'undergraduate', 'diploma', 'degree', 'postgraduate','master\'s degree', 'phd'];
 const maritalStatusOptions = ['single', 'married', 'divorced'];
  const departments = [
     'Choir',

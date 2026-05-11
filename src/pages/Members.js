@@ -5,7 +5,7 @@ import AddMemberModal from "../components/addMemberModal";
 import MemberDetails from "../components/memberDetails";
 import { useState } from "react";
 import ErrorComponent from "../components/errorComponent";
-import { memberStatus } from "../util/constants"
+import { memberStatus } from "../util/constants";
 
 
 const Members = () => {
@@ -15,11 +15,11 @@ const Members = () => {
   const page = Number(searchParams.get("page")) || 1;
   const selectedMemberStatus = searchParams.get("status") || "";
 
-  const [selectedMember, setSelectedMember] = useState(null)
-  const debounceSearch = useDebounce(search, 500)
+  const [selectedMember, setSelectedMember] = useState(null);
+  const debounceSearch = useDebounce(search, 500);
 
   const { result, error, isPending } = useFetch(
-    `http://localhost:4000/api/members?search=${debounceSearch}&page=${page}&status=${selectedMemberStatus}`
+    `http://localhost:4000/api/members?search=${debounceSearch}&page=${page}&status=${selectedMemberStatus}`,
   );
 
   const statusIndicator = (status) => {
@@ -29,6 +29,26 @@ const Members = () => {
   };
 
   const resetSelectedMember = () => setSelectedMember(null);
+
+  const filterButtons = () => (
+    memberStatus.map((memSta, index) => (
+      <button key={index} className={`btn ${memSta === selectedMemberStatus ? 'btn-secondary': 'btn-outline-secondary'} btn-sm text-capitalize`}
+        onClick={() => {
+          setSearchParams((prev) => {
+            const params = new URLSearchParams(prev);
+            if(memSta === selectedMemberStatus){
+              params.set("status", '');
+              return params;
+            }
+            params.set("search", '');
+            params.set("page", 1);
+            params.set("status", memSta);
+            return params;
+          })
+        }}
+      >{memSta}</button>
+    ))
+  )
 
   return (
     <div>
@@ -44,7 +64,7 @@ const Members = () => {
 
       {/* SEARCH INPUT */}
       <div className="d-flex mb-3 gap-3">
-        <div className="d-flex gap-2 export">
+        <div className="expt">
           <button disabled className="btn btn-success btn-sm">Excel</button>
           <button disabled className="btn btn-danger btn-sm">PDF</button>
         </div>
@@ -64,30 +84,16 @@ const Members = () => {
             });
           }}
         />
-        {/* <button title="Filter list" className="btn btn-outline-secondary btn-sm">
-          <span className="material-symbols-outlined">filter_list</span>
-        </button> */}
-        <div className="d-flex gap-2 ">
-            {memberStatus.map((memSta, index) => (
-              <button key={index} className={`btn ${memSta === selectedMemberStatus ? 'btn-secondary': 'btn-outline-secondary'} btn-sm`}
-                onClick={() => {
-                  setSearchParams((prev) => {
-                    const params = new URLSearchParams(prev);
-                    if(memSta === selectedMemberStatus){
-                      params.set("status", '');
-                      return params;
-                    }
-                    params.set("search", '');
-                    params.set("page", 1);
-                    params.set("status", memSta);
-                    return params;
-                  })
-                }}
-              >{memSta}</button>
-            ))}
+        <div className="filter">
+            {filterButtons()}
         </div>
       </div>
-
+        
+      <div className="mobile-filter m-3">
+          <button disabled className="btn btn-success btn-sm">Excel</button>
+          <button style={{marginRight: 'auto'}} disabled className="btn btn-danger btn-sm">PDF</button>
+        {filterButtons()}
+      </div>
       
 
           {/* MEMBER */}
@@ -129,7 +135,7 @@ const Members = () => {
                       <span
                         className={`badge bg-${statusIndicator(
                           member.membership_status
-                        )}`}
+                        )} text-capitalize`}
                       >
                         {member.membership_status}
                       </span>

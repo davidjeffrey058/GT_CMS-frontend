@@ -21,6 +21,7 @@ export default function Sidebar() {
                 key={item.path}
                 className='nav_link'
                 to={item.path}
+                onClick={toggleDrawer}
             >
                 <span className="material-symbols-outlined">{item.icon}</span>
                 <p>{item.name}</p>

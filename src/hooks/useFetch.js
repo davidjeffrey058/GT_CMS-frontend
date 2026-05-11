@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 
+
 const useFetch = (url) => {
     const [result, setData] = useState(null);
     const [isPending, setIsPending] = useState(true);
     const [error, setError] = useState(null);
+    
 
     useEffect(() => {
         const abortCont = new AbortController();
@@ -34,9 +36,9 @@ const useFetch = (url) => {
             })
 
        return () => abortCont.abort();
-    }, [url]);
+    }, [url,]);
 
-    return { result, isPending, error }
+    return { result, isPending, error, }
 }
 
 export default useFetch;

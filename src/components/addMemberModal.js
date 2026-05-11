@@ -175,7 +175,13 @@ const AddMemberModal = () => {
                     <div className="col">
                         <label>Educational Level</label>
                         <select className="form-control" required value={educationalLevel}
-                         onChange={(e) => setEducationalLevel(e.target.value)}>
+                         onChange={(e) => {
+                          const value = e.target.value;
+                          if(value === 'undergraduate'){
+                            setOccupation('STUDENT')
+                          }
+                          setEducationalLevel(e.target.value)
+                          }}>
                             {educationalLevels.map(level => (
                                 <option key={level} value={level}>{level.toUpperCase()}</option>
                             ))}

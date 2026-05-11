@@ -1,6 +1,7 @@
 import Sidebar from "./components/sidebar";
 import { Outlet } from "react-router-dom";
 import NavBar from "./components/navbar";
+import { toggleDrawer } from "./util/methods";
 
 const App = () => {
     return ( 
@@ -8,7 +9,7 @@ const App = () => {
             <div className="mobile_drawer">
                 <Sidebar />
             </div>
-            <div className="drw_bg"></div>
+            <div className="drw_bg" onClick={toggleDrawer}></div>
 
             <div className="app flex">
                 <div className="dsk_sidebar">
