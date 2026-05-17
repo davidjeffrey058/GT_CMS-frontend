@@ -15,7 +15,14 @@ export default function Sidebar() {
          className='material-symbols-outlined close' onClick={toggleDrawer}>
             close
         </span>
-        <h3>GTCMS</h3>
+        <div className='d-flex align-items-center gap-2 mb-4'>
+            <img style={{
+                width: '50px',
+                aspectRatio: '1',
+                // backgroundColor: '#f0f0f0'
+            }} src="/images/logo.png" alt="" />
+            <h3>GTCMS</h3>
+        </div>
         {navItems.map(item => (
             <NavLink 
                 key={item.path}

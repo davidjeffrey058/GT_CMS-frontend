@@ -125,6 +125,7 @@ const AddMemberModal = () => {
 
                 <div className="gry">
                   <div className="row">
+                    {/* full name */}
                     <div className="col-lg">
                       <label>Full Name</label>
                       <input type="text" className="form-control" required  
@@ -136,6 +137,7 @@ const AddMemberModal = () => {
                       />
                     </div>
 
+                      {/* Email */}
                     <div className="col">
                       <label>Email</label>
                       <input type="email" className="form-control" required
@@ -149,6 +151,7 @@ const AddMemberModal = () => {
                   </div>
 
                   <div className="row">
+                    {/* Gender */}
                     <div className="col">
                         <label>Gender</label>
                         <select className="form-control" required value={gender} onChange={(e) => setGender(e.target.value)}>
@@ -158,12 +161,14 @@ const AddMemberModal = () => {
                         </select>
                     </div>
 
+                      {/* Date of Birth */}
                     <div className="col">
                         <label>Date of Birth</label>
                         <input type="date" className="form-control" required value={dateOfBirth}
                          onChange={(e) => setDateOfBirth(e.target.value)}/>
                     </div>
 
+                      {/* Phone number */}
                     <div className="col-lg">
                         <label>Phone</label>
                         <input type="tel" className="form-control" placeholder="Eg. 0200000000"
@@ -188,6 +193,7 @@ const AddMemberModal = () => {
                         </select>
                     </div>
 
+                    {/* Occupation */}
                     <div className="col-lg">
                       <label>Occupation</label>
                       <input type="text" className="form-control" value={occupation} 
@@ -222,7 +228,6 @@ const AddMemberModal = () => {
                     </div>
                   </div>
 
-                 
                   <label className="mb-2">Departments</label>                  
                   <div className="d-flex gap-3 flex-wrap mb-3">
                     {departments.map((department, index) => (
@@ -246,7 +251,7 @@ const AddMemberModal = () => {
                   </div>
 
                   <label >Marital Status</label>
-                  <div className="d-flex gap-4">
+                  <div className="d-flex gap-4 mb-3">
                     {maritalStatusOptions.map((option, index) => (
                        <div key={index} className="form-check">
                         <input className="form-check-input" name="radioDefault" 
@@ -262,6 +267,21 @@ const AddMemberModal = () => {
                     ))}
                   </div>
 
+                    {/* Spouse details */}
+                  {maritalStatus !== 'single' && <div className="row">
+                    <div className="col-lg">
+                      <label>{`${maritalStatus === 'married'? 'Spouse': 'Ex-spouse'} Full Name`}</label>
+                      <input type="text" className="form-control"
+                      placeholder="First Name, Middle Name, Surname"
+                      />
+                    </div>
+                    <div className="col-lg">
+                      <label>{`${maritalStatus === 'married'? 'Spouse': 'Ex-spouse'} Phone Number`}</label>
+                      <input type="tel" className="form-control"
+                      placeholder="0200000000"
+                      />
+                    </div>
+                  </div>}
                 </div>
 
                 

@@ -89,7 +89,7 @@ const Members = () => {
         </div>
       </div>
         
-      <div className="mobile-filter m-3">
+      <div className="mobile-filter mb-3">
           <button disabled className="btn btn-success btn-sm">Excel</button>
           <button style={{marginRight: 'auto'}} disabled className="btn btn-danger btn-sm">PDF</button>
         {filterButtons()}
@@ -145,10 +145,15 @@ const Members = () => {
               </tbody>
             </table>
             {result.data.length === 0 && (
-              <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "200px" }}>
-                <p>No members found.</p>
+              <div style={{
+                height: '250px',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center'
+                }}>
+                <ErrorComponent errorMessage={'No member records found'} image="search.png"/>
               </div>
-            )}
+              )}
             <div className="d-flex justify-content-between align-items-center mt-3">
               <p className="fw-semibold">
                 {result.data.length} results of {result.meta.total} members

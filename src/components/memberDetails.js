@@ -131,6 +131,10 @@ const MemberDetails = ({memberId, resetSelectedMember}) => {
                 </div>
             ))}
             </div>
+            <div className='mt-3 d-flex justify-content-end gap-3'>
+                <button className="btn btn-danger">Delete</button>
+                <button disabled className="btn btn-primary disabled">Update</button>
+            </div>
           </div>}
 
           { memIsPending &&
