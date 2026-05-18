@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { educationalLevels, maritalStatusOptions, departments } from '../util/constants'
+import { useAuthContext } from "../hooks/useAuthContext";
 
 const AddMemberModal = () => {
 
@@ -19,6 +20,8 @@ const AddMemberModal = () => {
     const [baptismStatus, setBaptismStatus] = useState("none");
     const [dateBaptized, setDateBaptized] = useState("");
     const [maritalStatus, setMaritalStatus] = useState('single');
+
+    const { user } = useAuthContext();
 
     const resetForm = () => {
         setFullName("");
@@ -57,6 +60,10 @@ const AddMemberModal = () => {
 
     const handleSubmit = async (e) => {
       e.preventDefault();
+      if(!user){
+        setErr('You must be logged in to perform this action');
+        return;
+      }
 
       setIsLoading(true);
       setErr(null);
@@ -66,6 +73,7 @@ const AddMemberModal = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${user.token}`
           },
           body: JSON.stringify({
             full_name: fullName,

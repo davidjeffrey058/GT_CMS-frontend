@@ -224,7 +224,7 @@ input[type="checkbox"]{
     width: 100%;
 }
 
-.main_content > :nth-child(2){
+.main_content > :nth-child(3){
     padding: 20px;
 }
 
@@ -436,7 +436,7 @@ input[type="checkbox"]{
     height: 40px;
    }
 
-   .main_content > :nth-child(2){
+   .main_content > :nth-child(3){
     padding: 10px;
     }
 

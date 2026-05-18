@@ -1,18 +1,29 @@
 import { useState, useEffect } from "react";
+import { useAuthContext } from "./useAuthContext";
+
 
 
 const useFetch = (url) => {
     const [result, setData] = useState(null);
     const [isPending, setIsPending] = useState(true);
     const [error, setError] = useState(null);
-    
+    const { user } = useAuthContext();
 
     useEffect(() => {
         const abortCont = new AbortController();
         setIsPending(true);
+        console.log(user);
+        if(!user){
+            setError('User authorization required');
+            setIsPending(false);
+            return;
+        }
         
          fetch(url, { 
-            signal: abortCont.signal
+            signal: abortCont.signal,
+            headers: {
+                'Authorization': `Bearer ${user.token}`
+            }
          })
             .then(res => {
                 if(!res.ok){
@@ -36,7 +47,7 @@ const useFetch = (url) => {
             })
 
        return () => abortCont.abort();
-    }, [url,]);
+    }, [url, user]);
 
     return { result, isPending, error, }
 }

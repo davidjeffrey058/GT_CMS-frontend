@@ -3,8 +3,9 @@ import { Outlet } from "react-router-dom";
 import NavBar from "./components/navbar";
 import { toggleDrawer } from "./util/methods";
 
+
 const App = () => {
-    return ( 
+    return (
         <div>
             <div className="mobile_drawer">
                 <Sidebar />
@@ -16,8 +17,11 @@ const App = () => {
                     <Sidebar />
                 </div>
                 <div className="flex_column main_content">
-                    <NavBar /> 
-                    <Outlet/>
+                    <NavBar />
+                    < >
+                        <Outlet/>
+                    </> 
+                    
                 </div>
             </div>
         </div>

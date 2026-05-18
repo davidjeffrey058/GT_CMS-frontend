@@ -1,18 +1,22 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useLogin } from '../hooks/useLogin';
+
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { login, isLoading, error } = useLogin();
 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+    await login(email, password);
   };
 
+
   return (
-   <div className='login_container'>
+    <div className='login_container'>
       <div>
         <h1 className='lg_hd'>Welcome to GTCMS</h1>
       </div>
@@ -41,7 +45,7 @@ export default function Login() {
           />
           <div className='flex space_btw'>
             <span style={{alignItems: 'center', display: 'flex'}}>
-               <input type="checkbox" id="remember" />
+              <input type="checkbox" id="remember" />
                 <label style={{
                   marginLeft: '5px',
                   fontSize: '14px',
@@ -51,9 +55,14 @@ export default function Login() {
           </div>
           <br /><br />
           <button className='button primary' 
-          type="submit">Login</button>
+          type="submit" disabled = {isLoading}>
+            {isLoading ? 'Logging in...' : 'Login'}
+          </button>
+          {error && <div className='alert alert-danger mt-3'>{error}</div>}
         </form>
+        
       </div>
-   </div>
+    </div>
+   
   );
 }
