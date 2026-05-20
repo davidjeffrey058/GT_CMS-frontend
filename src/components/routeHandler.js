@@ -7,6 +7,8 @@ import Members from '../pages/Members';
 import { useAuthContext } from "../hooks/useAuthContext";
 // import Redirect from "./redirect";
 import { Navigate } from "react-router-dom";
+import ForgotPassword from "../pages/ForgotPassword";
+import ResetPassword from "../pages/ResetPassword";
 
 
 const RouteHandler = () => {
@@ -34,14 +36,19 @@ const RouteHandler = () => {
             },
             {
                 path: '/login',
-                element: user?<Navigate to={'/'} replace/> : <Login/>
+                element: user ? <Navigate to={'/'} replace/> : <Login/>
+            },
+            {
+                path: '/forgot-password',
+                element: user ? <Navigate to={'/'} replace/> : <ForgotPassword />
+            },{
+                path: '/reset-password/:token/:userId',
+                element: user ? <Navigate to={'/'} replace/> : <ResetPassword/>
             }
         ]
     )
     return (
-        <>
             <RouterProvider router={router} />
-        </>
     )
 }
 

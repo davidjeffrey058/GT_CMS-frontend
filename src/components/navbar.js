@@ -41,9 +41,6 @@ const NavBar = () => {
                         </div></li>
                     </ul>
                 </div>
-            
-                
-                
             </nav>
 
          {/* Logout Modal */}
