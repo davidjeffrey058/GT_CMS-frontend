@@ -4,9 +4,9 @@ import { useAuthContext } from "../hooks/useAuthContext";
 
 const AddMemberModal = () => {
 
-    // const [response, setResponse] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [err, setErr] = useState(null);
+    const [message, setMessage] = useState("");
 
     const [selectedDepartments, setSelectedDepartments] = useState([]);
     const [fullName, setFullName] = useState("");
@@ -36,6 +36,7 @@ const AddMemberModal = () => {
         setDateBaptized("");
         setMaritalStatus("single");
         setSelectedDepartments([]);
+        
     }
 
     const handleCheckboxChange = (department) => {
@@ -60,11 +61,7 @@ const AddMemberModal = () => {
 
     const handleSubmit = async (e) => {
       e.preventDefault();
-      if(!user){
-        setErr('You must be logged in to perform this action');
-        return;
-      }
-
+  
       setIsLoading(true);
       setErr(null);
 
@@ -99,9 +96,10 @@ const AddMemberModal = () => {
 
         const data = await res.json();
 
-        console.log(data);
+        // console.log(data);
 
-        window.alert(data.message || "Member added successfully");
+        setMessage(data.message || "Member added successfully");
+        // window.alert(data.message || "Member added successfully");
 
         // Optional reset
         resetForm();
@@ -125,7 +123,8 @@ const AddMemberModal = () => {
                 <button type="button" className="btn-close"
                 onClick={() => {
                   resetForm();
-                  err && setErr(null)
+                  setErr(null);
+                  setMessage("");
                 }} 
                 data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
@@ -301,10 +300,15 @@ const AddMemberModal = () => {
                   {err}
                 </div>}
 
+                {message !== '' && <div className="alert alert-success me-auto" role="alert">
+                  {message}
+                </div>}
+
                 <button type="button" className="btn btn-secondary"
                   onClick={() => {
                     resetForm();
-                    err && setErr(null);
+                    setErr(null);
+                    setMessage("");
                   }}
                  data-bs-dismiss="modal">Cancel</button>
                 <button

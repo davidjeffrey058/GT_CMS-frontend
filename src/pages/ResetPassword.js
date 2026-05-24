@@ -19,6 +19,8 @@ export default function ResetPassword() {
     setLoading(true);
 
     try {
+      
+      
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1500));
 

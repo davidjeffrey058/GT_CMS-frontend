@@ -1,8 +1,9 @@
 // ResetPassword.jsx
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { postFetch } from "../util/postFetch";
 
-export default function ResetPassword() {
+export default function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -26,16 +27,18 @@ export default function ResetPassword() {
     setLoading(true);
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const response = await postFetch("http://localhost:4000/api/auth/reset-link", 
+        { email });
 
-      setMessage(
-        "If an account exists with this email, a password reset link has been sent."
-      );
+        if(response.error){
+          throw new Error(response.error || "Failed to send reset link");
+        }
 
+        setMessage(response.message || "Reset link sent successfully. Please check your email.");
+       
       setEmail("");
     } catch (err) {
-      setError("Something went wrong. Please try again.");
+      setError(err.message || "An error occurred. Please try again.");
     } finally {
       setLoading(false);
     }
