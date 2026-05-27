@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { educationalLevels, maritalStatusOptions, departments } from '../util/constants'
 import { useAuthContext } from "../hooks/useAuthContext";
+import ImageUploadPreview from "./imageUploadPreview";
 
 const AddMemberModal = () => {
 
@@ -130,6 +131,7 @@ const AddMemberModal = () => {
               </div>
               <div className="modal-body">
 
+                <ImageUploadPreview />
                 <div className="gry">
                   <div className="row">
                     {/* full name */}
