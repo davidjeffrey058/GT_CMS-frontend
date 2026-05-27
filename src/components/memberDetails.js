@@ -8,7 +8,7 @@ const MemberDetails = ({memberId, resetSelectedMember}) => {
     const {
         result: memData, 
         error: memError, 
-        isPending: memIsPending } = useFetch(`http://localhost:4000/api/members/${memberId}`);
+        isPending: memIsPending } = useFetch(`${process.env.REACT_APP_BACKEND_URL}/api/members/${memberId}`);
 
         // console.log(memData)
 

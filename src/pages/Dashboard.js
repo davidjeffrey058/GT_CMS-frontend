@@ -1,7 +1,14 @@
+import { useEffect } from "react";
+import { setPageTitle } from "../util/methods";
 
 const Dashboard = () => {
+    useEffect(() => {
+        setPageTitle("Dashboard");
+    }, []);
+
     return ( 
-       <div>
+    <div>
+        
       <h3 className="mb-4">Dashboard</h3>
 
       <div className="row">

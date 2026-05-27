@@ -1,13 +1,18 @@
 // ResetPassword.jsx
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { postFetch } from "../util/postFetch";
+import { setPageTitle } from "../util/methods";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    setPageTitle("Forgot Password");
+  }, []);
 
   const validateEmail = (value) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -27,7 +32,7 @@ export default function ForgotPassword() {
     setLoading(true);
 
     try {
-      const response = await postFetch("http://localhost:4000/api/auth/reset-link", 
+      const response = await postFetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/reset-link`, 
         { email });
 
         if(response.error){

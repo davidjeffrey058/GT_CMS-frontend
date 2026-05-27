@@ -1,9 +1,14 @@
 import useFetch from "../hooks/useFetch";
+import { useEffect } from "react";
+import { setPageTitle } from "../util/methods";
 
 const Users = () => {
+  useEffect(() => {
+    setPageTitle("Users");
+  }, []);
 
   const { result, error, isPending } = useFetch(
-    `http://localhost:4000/api/users`
+    `${process.env.REACT_APP_BACKEND_URL}/api/users`
   );
 
   const roleIndicator = (role) => {

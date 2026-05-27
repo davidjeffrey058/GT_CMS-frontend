@@ -1,12 +1,19 @@
 // ResetPassword.jsx
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
+import { postFetch } from "../util/postFetch";
+import { setPageTitle } from "../util/methods";
 
 export default function ResetPassword() {
+  const { token, userId } = useParams();
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    setPageTitle("Reset Password");
+  }, []);
 
 
   const handleSubmit = async (e) => {
@@ -14,23 +21,22 @@ export default function ResetPassword() {
 
     setError("");
     setMessage("");
-
-
     setLoading(true);
 
     try {
-      
-      
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
 
-      setMessage(
-        "If an account exists with this email, a password reset link has been sent."
-      );
+      const response = await postFetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/${token}/reset-password/${userId}`,
+        { password });
+
+      if(response.error){
+          throw new Error(response.error || "Password reset failed");
+        }
+
+        setMessage(response.message || "Password reset successfully.");
 
       setPassword("");
     } catch (err) {
-      setError("Something went wrong. Please try again.");
+      setError(err.message || "An error occurred. Please try again.");
     } finally {
       setLoading(false);
     }

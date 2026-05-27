@@ -5,5 +5,13 @@ const toggleDrawer = () => {
     background.classList.toggle('active');
     sidebar.classList.toggle('active');
 }
- 
-export {toggleDrawer};
+
+const setPageTitle = (title, replace = false) => {
+    if (replace) {
+        document.title = title;
+    } else {
+        document.title = `${title} - GTCMS`;
+    }
+}
+
+export {toggleDrawer, setPageTitle};

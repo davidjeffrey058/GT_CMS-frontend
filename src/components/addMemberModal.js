@@ -66,7 +66,7 @@ const AddMemberModal = () => {
       setErr(null);
 
       try {
-        const res = await fetch('http://localhost:4000/api/members', {
+        const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/members`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

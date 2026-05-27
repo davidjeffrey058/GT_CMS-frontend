@@ -11,7 +11,7 @@ export const useLogin = () => {
         setError(null);
 
         try {
-            const response = await fetch('http://localhost:4000/api/auth/login', {
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/login`, {
                 method: 'POST',
                 credentials: "include",
                 headers: { 'Content-Type': 'application/json' },

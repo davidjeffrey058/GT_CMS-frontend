@@ -3,12 +3,17 @@ import useFetch from "../hooks/useFetch";
 import useDebounce from "../hooks/useDebounce";
 import AddMemberModal from "../components/addMemberModal";
 import MemberDetails from "../components/memberDetails";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ErrorComponent from "../components/errorComponent";
 import { memberStatus } from "../util/constants";
+import { setPageTitle } from "../util/methods";
 
 
 const Members = () => {
+  useEffect(() => {
+    setPageTitle("Members");
+  }, []);
+  
   const [searchParams, setSearchParams] = useSearchParams();
 
   const search = searchParams.get("search") || "";
@@ -19,7 +24,7 @@ const Members = () => {
   const debounceSearch = useDebounce(search, 500);
 
   const { result, error, isPending } = useFetch(
-    `http://localhost:4000/api/members?search=${debounceSearch}&page=${page}&status=${selectedMemberStatus}`,
+    `${process.env.REACT_APP_BACKEND_URL}/api/members?search=${debounceSearch}&page=${page}&status=${selectedMemberStatus}`,
   );
 
   const statusIndicator = (status) => {
