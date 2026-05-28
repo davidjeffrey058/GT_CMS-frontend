@@ -13,6 +13,8 @@ const Members = () => {
   useEffect(() => {
     setPageTitle("Members");
   }, []);
+
+  
   
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -20,12 +22,21 @@ const Members = () => {
   const page = Number(searchParams.get("page")) || 1;
   const selectedMemberStatus = searchParams.get("status") || "";
 
+  
+  const [selectedPage, setSelectedPage] = useState(page || 1);
+
+  useEffect(() => {
+      setSelectedPage(page);
+  }, [page])
+
   const [selectedMember, setSelectedMember] = useState(null);
   const debounceSearch = useDebounce(search, 500);
 
   const { result, error, isPending } = useFetch(
     `${process.env.REACT_APP_BACKEND_URL}/api/members?search=${debounceSearch}&page=${page}&status=${selectedMemberStatus}`,
   );
+
+  console.log('results here', result)
 
   const statusIndicator = (status) => {
       if (status === "active") return "success";
@@ -35,6 +46,7 @@ const Members = () => {
 
   const resetSelectedMember = () => setSelectedMember(null);
 
+  // Member status filter
   const filterButtons = () => (
     memberStatus.map((memSta, index) => (
       <button key={index} className={`btn ${memSta === selectedMemberStatus ? 'btn-secondary': 'btn-outline-secondary'} btn-sm text-capitalize`}
@@ -170,6 +182,7 @@ const Members = () => {
                   className="btn btn-outline-secondary btn-sm"
                   disabled={page <= 1}
                   onClick={() => {
+                    // setSelectedPage(page -1);
                     setSearchParams((prev) => {
                       prev.set("page", page - 1);
                       return prev;
@@ -180,17 +193,29 @@ const Members = () => {
                 </button>
 
                 {/* CURRENT PAGE */}
-                <form >
+                <form onSubmit={(e) =>{
+                  e.preventDefault();
+                  if(selectedPage <= result.meta.pages && selectedPage >= 1){
+                    setSearchParams((prev) => {
+                      prev.set("page", selectedPage);
+                      return prev;
+                    })
+                  } else {
+                    setSelectedPage(page);
+                  }
+                }}>
                   <input
                     style={{ width: "40px", textAlign: "center" }}
                     type="text"
                     className="form-control"
-                    value={page}
-                    onChange={(e) => setSearchParams((prev) => {
-                      const value = e.target.value;
-                      prev.set("page", value);
-                      return prev;
-                    })}
+                    value={selectedPage}
+                    onChange={
+                    (e) => {
+                      const inputValue = e.target.value;
+                      setSelectedPage(inputValue);
+                    }
+                    
+                  }
                   />
                 </form>
                 {/* NEXT */}
@@ -198,6 +223,7 @@ const Members = () => {
                   className="btn btn-outline-secondary btn-sm"
                   disabled={page >= result.meta.pages}
                   onClick={() => {
+                    // setSelectedPage(page + 1);
                     setSearchParams((prev) => {
                       prev.set("page", page + 1);
                       return prev;
