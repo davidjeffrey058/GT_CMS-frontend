@@ -12,7 +12,7 @@ const useFetch = (url) => {
     useEffect(() => {
         const abortCont = new AbortController();
         setIsPending(true);
-        console.log(user);
+        // console.log(user);
         if(!user){
             setError('User authorization required');
             setIsPending(false);

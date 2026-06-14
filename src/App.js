@@ -1,11 +1,20 @@
 import Sidebar from "./components/sidebar";
-import { Outlet } from "react-router-dom";
+import { useNavigate, Outlet } from "react-router-dom";
 import NavBar from "./components/navbar";
 import { toggleDrawer } from "./util/methods";
+import { useEffect } from "react";
 
 
-const App = () => {
-    console.log(process.env.NODE_ENV);
+const App = ({ user }) => {
+    const navigate = useNavigate();
+
+    // To login page if user is not logged in
+    useEffect(() => {
+         if(user === null){
+            navigate('/login');
+        }
+    }, [user, navigate])
+
     return (
         <div>
             <div className="mobile_drawer">

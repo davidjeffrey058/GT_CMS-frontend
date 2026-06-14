@@ -1,6 +1,7 @@
 import useFetch from "../hooks/useFetch";
 import { useEffect } from "react";
 import { setPageTitle } from "../util/methods";
+import Modal from "../components/modal";
 
 const Users = () => {
   useEffect(() => {
@@ -18,11 +19,15 @@ const Users = () => {
     return "secondary";
   }
 
+  const modalTitle = "addUserModal";
+
     return ( 
       <div>
         <div className="d-flex justify-content-between mb-3">
           <h4>Users</h4>
-          <button type="button" className="btn btn-primary btn-sm d-flex gap-2 align-items-center">
+          <button type="button" className="btn btn-primary btn-sm d-flex gap-2 align-items-center"
+          data-bs-toggle="modal" data-bs-target={`#${modalTitle}`}
+          >
             <span className="material-symbols-outlined">
               person_add
             </span>
@@ -70,6 +75,12 @@ const Users = () => {
             </div>
           )}
         </div>
+
+        <Modal modalId={modalTitle}
+        title="Add User"
+        saveText="Add User"
+        size={'lg'}
+        />
       </div>
      );
 }

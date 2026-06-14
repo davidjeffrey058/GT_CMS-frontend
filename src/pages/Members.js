@@ -36,8 +36,6 @@ const Members = () => {
     `${process.env.REACT_APP_BACKEND_URL}/api/members?search=${debounceSearch}&page=${page}&status=${selectedMemberStatus}`,
   );
 
-  console.log('results here', result)
-
   const statusIndicator = (status) => {
       if (status === "active") return "success";
       if (status === "inactive") return "danger";

@@ -1,16 +1,23 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useLogin } from '../hooks/useLogin';
 import { setPageTitle } from '../util/methods';
 
 
-export default function Login() {
+export default function Login({user}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     setPageTitle("Login", true);
   }, []);
+
+  useEffect(() => {
+    if(user !== null){
+      navigate('/');
+    }
+  }, [user, navigate])
   
   const { login, isLoading, error } = useLogin();
 

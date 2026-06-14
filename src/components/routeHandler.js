@@ -14,10 +14,44 @@ import ResetPassword from "../pages/ResetPassword";
 const RouteHandler = () => {
     const { user } = useAuthContext();
 
-    const router = createBrowserRouter(
+    // const router = createBrowserRouter(
+    //     [{
+    //         path: '/',
+    //         element: user? <App /> : <Navigate to={'/login'} replace/>,
+    //         errorElement: <div>Page not found</div>,
+    //         children: [
+    //             {
+    //                 path: '/',
+    //                 element: <Dashboard />
+    //             },
+    //             {
+    //                 path: '/members',
+    //                 element: <Members />  
+    //             },
+    //             {
+    //                 path: '/users',
+    //                 element: <Users />
+    //             }
+    //         ]
+    //         },
+    //         {
+    //             path: '/login',
+    //             element: user ? <Navigate to={'/'} replace/> : <Login/>
+    //         },
+    //         {
+    //             path: '/forgot-password',
+    //             element: user ? <Navigate to={'/'} replace/> : <ForgotPassword />
+    //         },{
+    //             path: '/reset-password/:token/:userId',
+    //             element: user ? <Navigate to={'/'} replace/> : <ResetPassword/>
+    //         }
+    //     ]
+    // )
+
+     const router = createBrowserRouter(
         [{
             path: '/',
-            element: user? <App /> : <Navigate to={'/login'} replace/>,
+            element: <App user={user}/>,
             errorElement: <div>Page not found</div>,
             children: [
                 {
@@ -36,11 +70,11 @@ const RouteHandler = () => {
             },
             {
                 path: '/login',
-                element: user ? <Navigate to={'/'} replace/> : <Login/>
+                element: <Login user={user}/>
             },
             {
                 path: '/forgot-password',
-                element: user ? <Navigate to={'/'} replace/> : <ForgotPassword />
+                element: user ? <Navigate to={'/'} replace/> :  <ForgotPassword />
             },{
                 path: '/reset-password/:token/:userId',
                 element: user ? <Navigate to={'/'} replace/> : <ResetPassword/>
