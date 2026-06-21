@@ -5,48 +5,14 @@ import Users from '../pages/Users';
 import App from '../App';
 import Members from '../pages/Members';
 import { useAuthContext } from "../hooks/useAuthContext";
-// import Redirect from "./redirect";
 import { Navigate } from "react-router-dom";
 import ForgotPassword from "../pages/ForgotPassword";
 import ResetPassword from "../pages/ResetPassword";
-
+import Finance from "../pages/Finance";
+import Events from "../pages/Events"
 
 const RouteHandler = () => {
     const { user } = useAuthContext();
-
-    // const router = createBrowserRouter(
-    //     [{
-    //         path: '/',
-    //         element: user? <App /> : <Navigate to={'/login'} replace/>,
-    //         errorElement: <div>Page not found</div>,
-    //         children: [
-    //             {
-    //                 path: '/',
-    //                 element: <Dashboard />
-    //             },
-    //             {
-    //                 path: '/members',
-    //                 element: <Members />  
-    //             },
-    //             {
-    //                 path: '/users',
-    //                 element: <Users />
-    //             }
-    //         ]
-    //         },
-    //         {
-    //             path: '/login',
-    //             element: user ? <Navigate to={'/'} replace/> : <Login/>
-    //         },
-    //         {
-    //             path: '/forgot-password',
-    //             element: user ? <Navigate to={'/'} replace/> : <ForgotPassword />
-    //         },{
-    //             path: '/reset-password/:token/:userId',
-    //             element: user ? <Navigate to={'/'} replace/> : <ResetPassword/>
-    //         }
-    //     ]
-    // )
 
      const router = createBrowserRouter(
         [{
@@ -63,8 +29,16 @@ const RouteHandler = () => {
                     element: <Members />  
                 },
                 {
+                    path: '/finance',
+                    element: <Finance />
+                },
+                {
                     path: '/users',
                     element: <Users />
+                },
+                {
+                    path: '/events',
+                    element: <Events/>
                 }
             ]
             },

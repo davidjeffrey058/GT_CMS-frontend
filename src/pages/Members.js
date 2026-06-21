@@ -11,7 +11,7 @@ import { setPageTitle } from "../util/methods";
 
 const Members = () => {
   useEffect(() => {
-    setPageTitle("Members");
+    setPageTitle("Member Management");
   }, []);
 
   
@@ -67,14 +67,27 @@ const Members = () => {
 
   return (
     <div>
-      <div className="d-flex justify-content-between mb-3">
-        <h4>Members</h4>
-        <button type="button" className="btn btn-primary btn-sm d-flex gap-2 align-items-center"data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+      {/* Page header */}
+      <div className="card border-0 shadow-sm mb-4">
+        <div className="card-body d-flex align-items-center justify-content-between">
+          <div className="">
+            <h2 className="fw-bold mb-1">
+              Member Management
+            </h2>
+            <p className="text-muted mb-0">
+              Manage members, view details, and perform actions related to member management.
+            </p>
+          </div>
+         <button type="button" 
+         className="btn btn-primary btn-sm d-flex gap-2 align-items-center"
+         data-bs-toggle="modal" 
+         data-bs-target="#staticBackdrop">
           <span className="material-symbols-outlined">
             person_add
           </span>
           Add Member
         </button>
+        </div>
       </div>
 
       {/* SEARCH INPUT */}

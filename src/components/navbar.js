@@ -1,6 +1,7 @@
 import {toggleDrawer} from '../util/methods';
 import { useLogout } from '../hooks/useLogout';
 import { useAuthContext } from '../hooks/useAuthContext';
+import Modal from './modal';
 
 const NavBar = () => {
     const { logout } = useLogout();
@@ -31,7 +32,7 @@ const NavBar = () => {
                             </span>
                             Settings
                         </div></li>
-                        <li data-bs-toggle="modal" data-bs-target="#exampleModal"
+                        <li data-bs-toggle="modal" data-bs-target="#logoutModal"
                             
                         ><div className="dropdown-item d-flex align-items-center gap-2">
                             <span className="material-symbols-outlined">
@@ -44,7 +45,7 @@ const NavBar = () => {
             </nav>
 
          {/* Logout Modal */}
-            <div className="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            {/* <div className="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div className="modal-dialog">
                     <div className="modal-content">
                     <div className="modal-header">
@@ -63,7 +64,17 @@ const NavBar = () => {
                     </div>
                     </div>
                 </div>
-            </div>
+            </div> */}
+
+            <Modal
+            modalId="logoutModal"
+            title="Logout"
+            saveText="Logout"
+            closeText="Cancel"
+            children={"Are you sure you want to logout?"}
+            centered={true}
+            onSave={() => logout()}
+            />
         </>
         
      );

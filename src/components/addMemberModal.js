@@ -2,6 +2,7 @@ import { useState } from "react";
 import { educationalLevels, maritalStatusOptions, departments } from '../util/constants'
 import { useAuthContext } from "../hooks/useAuthContext";
 import ImageUploadPreview from "./imageUploadPreview";
+// import Modal from "./modal";  
 
 const AddMemberModal = () => {
 
@@ -23,6 +24,7 @@ const AddMemberModal = () => {
     const [maritalStatus, setMaritalStatus] = useState('single');
 
     const { user } = useAuthContext();
+    // const modalId = "addMemberModal";
 
     const resetForm = () => {
         setFullName("");
@@ -324,6 +326,16 @@ const AddMemberModal = () => {
               </div>
             </div>
           </div>
+
+          {/* <Modal
+          title={'Add New Member'}
+          modalId
+          onCancel={() => {
+            resetForm();
+            setErr(null);
+            setMessage("");
+          }}
+          /> */}
         </form>
      );
 }

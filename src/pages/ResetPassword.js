@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { postFetch } from "../util/postFetch";
 import { setPageTitle } from "../util/methods";
+import Validator from "../components/validator";
 
 export default function ResetPassword() {
   const { token, userId } = useParams();
@@ -12,7 +13,7 @@ export default function ResetPassword() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    setPageTitle("Reset Password");
+    setPageTitle("Reset Password", true);
   }, []);
 
 
@@ -41,6 +42,7 @@ export default function ResetPassword() {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="bg-light min-vh-100 d-flex align-items-center justify-content-center">
@@ -69,6 +71,28 @@ export default function ResetPassword() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
+
+          {password && (
+            <>
+              <Validator
+              isValid={password.length >= 6}
+              text={'Must be 8 characters long'}
+              />
+               <Validator
+              isValid={/\d/.test(password)}
+              text={'Must contain a number'}
+              />
+               <Validator
+              isValid={/[^a-zA-Z0-9\s]/.test(password)}
+              text={'Must contain a special character'}
+              />
+               <Validator
+              isValid={/[A-Z]/.test(password)}
+              text={'Must contain a capital letter'}
+              />
+            </>
+           
+          )}
 
           {error && (
             <div className="alert alert-danger py-2" role="alert">

@@ -5,6 +5,8 @@ import { toggleDrawer } from '../util/methods';
 const navItems = [
     { name: 'Dashboard', path: '/', icon: 'dashboard' },
     { name: 'Members', path: '/members', icon: 'group' },
+    { name: 'Events', path: '/events', icon: 'event'},
+    { name: 'Finance', path: '/finance', icon: 'finance' },
     { name: 'Users', path: '/users', icon: 'person' }
 ];
 
