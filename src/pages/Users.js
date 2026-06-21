@@ -30,7 +30,7 @@ const Users = () => {
                 Users
               </h2>
               <p className="text-muted mb-0">
-                Manage sytem users, roles and access
+                Manage system users, roles and access
               </p>
             </div>
             <button type="button" 
@@ -62,7 +62,7 @@ const Users = () => {
               {result.data.map((user) => (
                   <tr key={user.id}>
                     <td>{user.email}</td>
-                    <td><span className={`badge bg-${roleIndicator(user.role)}`}>{user.role}</span></td>
+                    <td><span className={`badge bg-${roleIndicator(user.role)} text-capitalize`}>{user.role}</span></td>
                     <td><span className="material-symbols-outlined">more_vert</span></td>
                   </tr>
                 ))}

@@ -10,6 +10,7 @@ import ForgotPassword from "../pages/ForgotPassword";
 import ResetPassword from "../pages/ResetPassword";
 import Finance from "../pages/Finance";
 import Events from "../pages/Events"
+import TestPage from "../pages/TestPage";
 
 const RouteHandler = () => {
     const { user } = useAuthContext();
@@ -52,6 +53,9 @@ const RouteHandler = () => {
             },{
                 path: '/reset-password/:token/:userId',
                 element: user ? <Navigate to={'/'} replace/> : <ResetPassword/>
+            },{
+                path: '/test',
+                element: <TestPage />
             }
         ]
     )

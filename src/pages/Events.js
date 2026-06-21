@@ -184,6 +184,7 @@ const Events = () => {
                         >
                           <ErrorComponent
                           errorMessage={'No events Scheduled'}
+                          image="delete.png"
                           />
                         </td>
                       </tr>

@@ -7,6 +7,8 @@ import { useState, useEffect } from "react";
 import ErrorComponent from "../components/errorComponent";
 import { memberStatus } from "../util/constants";
 import { setPageTitle } from "../util/methods";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 
 const Members = () => {
@@ -14,15 +16,11 @@ const Members = () => {
     setPageTitle("Member Management");
   }, []);
 
-  
-  
   const [searchParams, setSearchParams] = useSearchParams();
-
   const search = searchParams.get("search") || "";
   const page = Number(searchParams.get("page")) || 1;
   const selectedMemberStatus = searchParams.get("status") || "";
 
-  
   const [selectedPage, setSelectedPage] = useState(page || 1);
 
   useEffect(() => {
@@ -65,6 +63,45 @@ const Members = () => {
     ))
   )
 
+  const checkDateofBirth = (dob) => {
+    const today = new Date();
+    const birthDate = new Date(dob);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDifference = today.getMonth() - birthDate.getMonth();
+
+    if (monthDifference < 0) {
+      age--;
+    }
+
+    return age;
+  };
+
+  const exportToPDF = (members) => {
+    const doc = new jsPDF();
+
+    // Header
+    doc.setFontSize(18);
+    doc.text(`Members Report`, 14, 22);
+    doc.setFontSize(12);
+    doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 30);
+
+    // Table headers
+    const headers = [["Name", "Age", "Contact", "Status"]];
+    
+    autoTable(doc, {
+      startY: 40,
+      head: headers,
+      body: members.map(member => [
+        member.full_name,
+        checkDateofBirth(member.dob),
+        `${member.phone}\n${member.email}`,
+        member.membership_status
+      ])
+    });
+
+    doc.save(`GTCM_Members_Report_${new Date().toLocaleDateString()}.pdf`);
+  }
+
   return (
     <div>
       {/* Page header */}
@@ -94,7 +131,10 @@ const Members = () => {
       <div className="d-flex mb-3 gap-3">
         <div className="expt">
           <button disabled className="btn btn-success btn-sm">Excel</button>
-          <button disabled className="btn btn-danger btn-sm">PDF</button>
+          <button 
+          disabled={isPending}
+          onClick={() => exportToPDF(result.data)} 
+          className="btn btn-danger btn-sm">PDF</button>
         </div>
 
         <input
@@ -131,17 +171,21 @@ const Members = () => {
             <table className="table table-hover align-middle">
               <thead className="table-light">
                 <tr>
-                  <th>Image</th>
+                  <th>Photo</th>
                   <th>Name</th>
-                  <th>Gender</th>
-                  <th>Phone</th>
+                  <th>Age</th>
+                  {/* <th>Gender</th> */}
+                  <th>Contact</th>
                   <th>Status</th>
                 </tr>
               </thead>
 
               <tbody>
                 {result.data.map((member) => (
-                  <tr className={selectedMember && (selectedMember === member._id)? 'table-active': ''} style={{cursor: 'pointer',}} key={member._id}  data-bs-toggle="offcanvas" 
+                  <tr className={selectedMember && (selectedMember === member._id)? 'table-active': ''} 
+                  style={{cursor: 'pointer',}} 
+                  key={member._id}  
+                  data-bs-toggle="offcanvas" 
                   data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"
                   onClick={() => setSelectedMember(member._id)}
                   >
@@ -156,9 +200,13 @@ const Members = () => {
                         style={{ width: "40px", height: "40px" }}
                       />
                     </td>
-                    <td>{member.full_name}</td>
-                    <td className="text-capitalize">{member.gender}</td>
-                    <td>{member.phone}</td>
+                    <td><div className="fw-semibold">{member.full_name}</div></td>
+                    <td>{checkDateofBirth(member.dob)}</td>
+                    {/* <td className="text-capitalize">{member.gender}</td> */}
+                    <td>
+                      <div className="small">{member.phone}</div>
+                      <div className="small text-muted">{member.email}</div>
+                    </td>
                     <td>
                       <span
                         className={`badge bg-${statusIndicator(

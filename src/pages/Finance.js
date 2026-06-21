@@ -1,6 +1,6 @@
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import React, { useState, useMemo } from 'react';
-// import 'bootstrap/dist/css/bootstrap.min.css';
-// import 'bootstrap-icons/font/bootstrap-icons.css';
 
 const Finance = () => {
   const [transactions, setTransactions] = useState([
@@ -113,6 +113,49 @@ const Finance = () => {
     a.href = url;
     a.download = `financial_report_${filters.reportType}.csv`;
     a.click();
+  };
+
+  const exportToPDF = () => {
+     const doc = new jsPDF();
+  
+    // Header
+    doc.setFontSize(18);
+    doc.text('Financial Report', 14, 20);
+    doc.setFontSize(11);
+    doc.setTextColor(100);
+    doc.text(`Generated: ${new Date().toLocaleDateString()}`, 14, 28);
+    doc.text(`Period: ${filters.reportType}`, 14, 34);
+    
+    // Summary boxes
+    doc.setFontSize(12);
+    doc.setTextColor(0);
+    doc.text(`Total Income: GHS ${summary.income.toFixed(2)}`, 14, 44);
+    doc.text(`Total Expenses: GHS ${summary.expense.toFixed(2)}`, 14, 52);
+    doc.setFont(undefined, 'bold');
+    doc.text(`Balance: GHS ${summary.balance.toFixed(2)}`, 14, 60);
+    doc.setFont(undefined, 'normal');
+    
+    // Table
+    autoTable(doc, {
+      startY: 68,
+      head: [['Date', 'Type', 'Category', 'Amount', 'Method', 'Description']],
+      body: filteredTransactions.map(t => [
+        new Date(t.date).toLocaleDateString(),
+        t.type,
+        t.category,
+        `${t.type === 'income' ? '+' : '-'}GHS ${t.amount.toFixed(2)}`,
+        t.method,
+        t.description
+      ]),
+      styles: { fontSize: 9 },
+      headStyles: { fillColor: [41, 128, 185] },
+      alternateRowStyles: { fillColor: [245, 245, 245] },
+      // columnStyles: {
+      //   3: { halign: 'right' } // Amount column right-aligned
+      // }
+    });
+    
+  doc.save(`financial_report_${filters.reportType}_${Date.now()}.pdf`);
   };
 
   return (
@@ -286,8 +329,13 @@ const Finance = () => {
                           Yearly
                         </button>
                       </div>
-                      <button onClick={exportToCSV} className="btn btn-sm btn-success">
+                      <button onClick={exportToCSV} 
+                      className="btn btn-sm btn-success">
                         <i className="bi bi-download me-1"></i>CSV
+                      </button>
+                      <button onClick={exportToPDF} 
+                      className="btn btn-sm btn-danger">
+                        <i className="bi bi-download me-1"></i>PDF
                       </button>
                     </div>
                   </div>
