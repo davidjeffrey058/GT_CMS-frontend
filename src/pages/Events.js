@@ -3,32 +3,45 @@ import ErrorComponent from "../components/errorComponent";
 import { setPageTitle } from "../util/methods";
 import PageHeader from "../components/pageHeader";
 import { eventTypes } from "../util/constants";
+import useFetch from "../hooks/useFetch";
+import { useAuthContext } from '../hooks/useAuthContext';
+import { postFetch } from "../util/postFetch";
 
 const Events = () => {
-    useEffect(() => {
-        setPageTitle("Events & Services");
-    }, []);
-  const [events, setEvents] = useState([
-    {
-      id: 1,
-      title: "Sunday Worship Service",
-      type: "Service",
-      date: "2025-09-15",
-      time: "09:00",
-      venue: "Main Auditorium",
-      roles: ["Pastor John", "Choir Team A", "Usher Group 1"],
-      reminder: true,
-    },
-  ]);
+  const { user } = useAuthContext();
+
+  useEffect(() => {
+    setPageTitle("Events & Services");
+  }, []);
+
+    // const sampleEvent = [{
+    //   id: 1,
+    //   title: "Sunday Worship Service",
+    //   event_type: "Service",
+    //   date: "2025-09-15",
+    //   time: "09:00",
+    //   venue: "Main Auditorium",
+    //   assigned_roles: ["Pastor John", "Choir Team A", "Usher Group 1"],
+    //   set_reminder: true,
+    // },]
+
+  const [events, setEvents] = useState([]);
+  const { result, error, isPending } = useFetch(`${process.env.REACT_APP_BACKEND_URL}/api/events`);
+
+  useEffect(() => {
+    if (result) {
+      setEvents(result.data);
+    }
+  }, [result]);
 
   const [formData, setFormData] = useState({
     title: "",
-    type: "Service",
+    event_type: "service",
     date: "",
     time: "",
     venue: "",
-    roles: "",
-    reminder: true,
+    assigned_roles: "",
+    set_reminder: true,
   });
 
   const handleChange = (e) => {
@@ -40,39 +53,51 @@ const Events = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    try{
+      const newEvent = {
+        ...formData,
+        assigned_roles: formData.assigned_roles
+          .split(",")
+          .map((role) => role.trim())
+          .filter(Boolean),
+      };
 
-    const newEvent = {
-      id: Date.now(),
-      ...formData,
-      roles: formData.roles
-        .split(",")
-        .map((role) => role.trim())
-        .filter(Boolean),
-    };
+      const data = await postFetch(`${process.env.REACT_APP_BACKEND_URL}/api/events`, newEvent, user.token);
 
-    setEvents([...events, newEvent]);
+      setEvents((prev) => [data, ...prev]);
+      
+      setFormData({
+        title: "",
+        event_type: "service",
+        date: "",
+        time: "",
+        venue: "",
+        assigned_roles: "",
+        set_reminder: true,
+      });
 
-    setFormData({
-      title: "",
-      type: "Service",
-      date: "",
-      time: "",
-      venue: "",
-      roles: "",
-      reminder: true,
-    });
+    } catch (err) {
+      console.error("Error submitting event:", err);
+    }
+    
   };
 
   const deleteEvent = (id) => {
-    setEvents(events.filter((event) => event.id !== id));
+    try{
+      const data = postFetch(`${process.env.REACT_APP_BACKEND_URL}/api/events/${id}`, {}, user.token, "DELETE");
+      console.log("Delete response:", data);
+      setEvents(events.filter((event) => event._id !== id));
+    } catch (err) {
+      console.error("Error deleting event:", err);
+    }
+    
   };
 
   return (
     <div className="container-fluid py-4">
         {/* Page Header */}
-       
         <PageHeader
         icon="time-management.png"
         title="Event & Service Management"
@@ -93,102 +118,128 @@ const Events = () => {
 
         {/* Event List */}
         <div className="">
+          {/* Scheduled Events */}
           <div className="card shadow-sm">
-            <div className="card-header d-flex justify-content-between align-items-center">
-              <h5 className="mb-0">Scheduled Events</h5>
-              <span className="badge bg-primary">
-                {`${events.length} Event${events.length >= 2 ? 's' : ''}`}
-              </span>
-            </div>
+            { isPending ? (
+              <div className="d-flex justify-content-center align-items-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+              </div>
+              
+            ) : (<>
+              <div className="card-header d-flex justify-content-between align-items-center">
+                <h5 className="mb-0">Scheduled Events</h5>
+                <span className="badge bg-primary">
+                  {`${events.length} Event${events.length >= 2 ? 's' : ''}`}
+                </span>
+              </div>
 
-            <div className="card-body p-0">
-              <div className="table-responsive">
-                <table className="table table-hover align-middle mb-0">
-                  <thead className="table-light">
-                    <tr>
-                      <th>Event</th>
-                      <th>Type</th>
-                      <th>Schedule</th>
-                      <th>Venue</th>
-                      <th>Assigned Roles</th>
-                      <th>Reminder</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
+              <div className="card-body p-0">
+                <div className="table-responsive">
+                  <table className="table table-hover align-middle mb-0">
+                    <thead className="table-light">
+                      <tr>
+                        <th>Event</th>
+                        <th>Type</th>
+                        <th>Schedule</th>
+                        <th>Venue</th>
+                        <th>Assigned Roles</th>
+                        <th>Reminder</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
 
-                  <tbody>
-                    {events.length > 0 ? (
-                      events.map((event) => (
-                        <tr key={event.id}>
-                          <td>
-                            <strong>{event.title}</strong>
-                          </td>
+                    <tbody>
+                      {events.length > 0 && !error && (
+                        events.map((event) => (
+                          <tr key={event._id}>
+                            <td>
+                              <strong>{event.title}</strong>
+                            </td>
 
-                          <td>
-                            <span className="badge bg-info text-dark">
-                              {event.type}
-                            </span>
-                          </td>
+                            <td>
+                              <span className="badge bg-info text-dark">
+                                {event.event_type}
+                              </span>
+                            </td>
 
-                          <td>
-                            <div>{event.date}</div>
-                            <small className="text-muted">
-                              {event.time}
-                            </small>
-                          </td>
+                            <td>
+                              <div>{event.date}</div>
+                              <small className="text-muted">
+                                {event.time}
+                              </small>
+                            </td>
 
-                          <td>{event.venue}</td>
+                            <td>{event.venue}</td>
 
-                          <td>
-                            {event.roles.map((role, index) => (
-                              <span
-                                key={index}
-                                className="badge bg-secondary me-1 mb-1"
+                            <td>
+                              {event.assigned_roles.map((role, index) => (
+                                <span
+                                  key={index}
+                                  className="badge bg-secondary me-1 mb-1"
+                                >
+                                  {role}
+                                </span>
+                              ))}
+                            </td>
+
+                            <td>
+                              {event.set_reminder ? (
+                                <span className="badge bg-success">
+                                  Enabled
+                                </span>
+                              ) : (
+                                <span className="badge bg-danger">
+                                  Disabled
+                                </span>
+                              )}
+                            </td>
+
+                            <td>
+                              <button
+                                className="btn btn-sm btn-outline-danger"
+                                onClick={() => deleteEvent(event._id)}
                               >
-                                {role}
-                              </span>
-                            ))}
-                          </td>
+                                Delete
+                              </button>
+                            </td>
+                          </tr>
+                        ))
+                      ) }
 
-                          <td>
-                            {event.reminder ? (
-                              <span className="badge bg-success">
-                                Enabled
-                              </span>
-                            ) : (
-                              <span className="badge bg-danger">
-                                Disabled
-                              </span>
-                            )}
-                          </td>
-
-                          <td>
-                            <button
-                              className="btn btn-sm btn-outline-danger"
-                              onClick={() => deleteEvent(event.id)}
-                            >
-                              Delete
-                            </button>
+                      {!isPending && events.length === 0 && !error && (
+                        <tr>
+                          <td
+                            colSpan="7"
+                            className="text-center py-4 text-muted"
+                          >
+                            <ErrorComponent
+                            errorMessage={'No events Scheduled'}
+                            image="delete.png"
+                            />
                           </td>
                         </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td
-                          colSpan="7"
-                          className="text-center py-4 text-muted"
-                        >
-                          <ErrorComponent
-                          errorMessage={'No events Scheduled'}
-                          image="delete.png"
-                          />
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
+                      )}
+
+                      {error && (
+                        <tr>
+                          <td
+                            colSpan="7"
+                            className="text-center py-4 text-muted"
+                          >
+                            <ErrorComponent
+                            errorMessage={error}
+                            image="error.png"
+                            />
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
-            </div>
+            </>) }
           </div>
 
           {/* Calendar Placeholder */}
@@ -218,7 +269,7 @@ const Events = () => {
                   <h6 className="text-success">Active Reminders</h6>
                   <h3>
                     {
-                      events.filter((e) => e.reminder)
+                      events.filter((e) => e.set_reminder)
                         .length
                     }
                   </h3>
@@ -246,7 +297,7 @@ const Events = () => {
                   <h3>
                     {[
                       ...new Set(
-                        events.flatMap((e) => e.roles)
+                        events.flatMap((e) => e.assigned_roles)
                       ),
                     ].length}
                   </h3>
@@ -293,21 +344,16 @@ const Events = () => {
                         <div className="mb-3">
                         <label className="form-label">Event Type</label>
                         <select
-                            name="type"
+                            name="event_type"
                             className="form-select text-capitalize"
-                            value={formData.type}
+                            value={formData.event_type}
                             onChange={handleChange}
                         >
                           {eventTypes.map((type, index) => (
-                            <option className="text-capitalize" key={index} value={type}>
+                            <option className="" key={index} value={type}>
                               {type}
                             </option>
                           ))}
-                            {/* <option>Service</option>
-                            <option>Crusade</option>
-                            <option>Prayer Meeting</option>
-                            <option>Leadership Meeting</option>
-                            <option>Youth Program</option> */}
                         </select>
                         </div>
 
@@ -354,10 +400,10 @@ const Events = () => {
                             Assign Roles
                         </label>
                         <textarea
-                            name="roles"
+                            name="assigned_roles"
                             rows="3"
                             className="form-control"
-                            value={formData.roles}
+                            value={formData.assigned_roles}
                             onChange={handleChange}
                             placeholder="Pastor John, Choir Team A, Usher Group 1"
                         />
@@ -370,8 +416,8 @@ const Events = () => {
                         <input
                             type="checkbox"
                             className="form-check-input"
-                            name="reminder"
-                            checked={formData.reminder}
+                            name="set_reminder"
+                            checked={formData.set_reminder}
                             onChange={handleChange}
                         />
                         <label className="form-check-label">

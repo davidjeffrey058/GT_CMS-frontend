@@ -24,6 +24,7 @@ const Members = () => {
 
   const [selectedPage, setSelectedPage] = useState(page || 1);
 
+ 
   useEffect(() => {
       setSelectedPage(page);
   }, [page])
@@ -308,7 +309,7 @@ const Members = () => {
       </div>
 
         {/* ADD MEMBER MODAL */}
-        <AddMemberModal />
+        <AddMemberModal/>
 
         <MemberDetails memberId={selectedMember} resetSelectedMember={resetSelectedMember}/>
 

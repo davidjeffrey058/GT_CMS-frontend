@@ -7,7 +7,7 @@ import { baptismOptions } from "../util/constants";
 // import DatePicker from "react-datepicker";
 // import "react-datepicker/dist/react-datepicker.css";
 
-const AddMemberModal = () => {
+const AddMemberModal = ({result, setResult}) => {
 
     const [isLoading, setIsLoading] = useState(false);
     const [err, setErr] = useState(null);
@@ -104,13 +104,9 @@ const AddMemberModal = () => {
         }
 
         const data = await res.json();
-
-        // console.log(data);
+        console.log("Added member:", data);
 
         setMessage(data.message || "Member added successfully");
-        // window.alert(data.message || "Member added successfully");
-
-        // Optional reset
         resetForm();
 
       } catch (err) {

@@ -1,10 +1,9 @@
 
-
-export const postFetch = async (url, data, token) => {
+export const postFetch = async (url, data, token, method) => {
 
     try {
         const res = await fetch(url, {
-            method: "POST",
+            method: method || "POST",
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`
@@ -13,7 +12,6 @@ export const postFetch = async (url, data, token) => {
         });
         return await res.json();
     } catch (error) {
-        console.error("Error fetching data:", error);
         throw error;
     }
 };
