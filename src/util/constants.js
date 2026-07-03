@@ -14,10 +14,14 @@ const maritalStatusOptions = ['single', 'married', 'divorced'];
     ];
 
 const memberStatus = ['active', 'inactive', 'visitor'];
+const eventTypes = ['service', 'crusade', 'prayer meeting', 'leadership meeting', 'youth program', 'other'];
+const baptismOptions = ['not baptized', 'water baptized', 'holy spirit baptized'];
 
 export {
     educationalLevels,
     maritalStatusOptions,
     departments,
-    memberStatus
+    memberStatus,
+    eventTypes,
+    baptismOptions
 }

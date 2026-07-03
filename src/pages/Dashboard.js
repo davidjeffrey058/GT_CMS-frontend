@@ -1,3 +1,6 @@
+import { Link } from "react-router-dom";
+import PageHeader from "../components/pageHeader";
+
 const Dashboard = () => {
   const dashboardStats = {
     totalMembers: 342,
@@ -9,7 +12,11 @@ const Dashboard = () => {
   };
   return ( 
     <div>
-      <h3 className="fw-bold mb-4">Dashboard Overview</h3>
+      <PageHeader
+        icon="dashboard.png"
+        title="Dashboard"
+        subtitle="Overview of key metrics and recent activity"
+      />
       <div className="row g-3 mb-4">
         <div className="col-md-4 col-lg-2">
           <div className="card border-0 shadow-sm text-center">
@@ -110,16 +117,16 @@ const Dashboard = () => {
             </div>
             <div className="card-body">
               <div className="d-grid gap-2">
-                <button className="btn btn-outline-primary text-start">
+                <Link to="/members" className="btn btn-outline-primary text-start">
                   <i className="bi bi-person-plus me-2"></i>Add New Member
-                </button>
-                <button className="btn btn-outline-success text-start">
+                </Link>
+                <Link to="/finance" className="btn btn-outline-success text-start">
                   <i className="bi bi-plus-circle me-2"></i>Record Transaction
-                </button>
-                <button className="btn btn-outline-info text-start" >
+                </Link>
+                <Link to="/events" className="btn btn-outline-info text-start">
                   <i className="bi bi-calendar-plus me-2"></i>Create Event
-                </button>
-                <button className="btn btn-outline-warning text-start" >
+                </Link>
+                <button to="/send-announcement" className="btn btn-outline-warning text-start">
                   <i className="bi bi-megaphone me-2"></i>Send Announcement
                 </button>
               </div>

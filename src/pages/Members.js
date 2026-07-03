@@ -9,6 +9,7 @@ import { memberStatus } from "../util/constants";
 import { setPageTitle } from "../util/methods";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import PageHeader from "../components/pageHeader";
 
 
 const Members = () => {
@@ -33,6 +34,7 @@ const Members = () => {
   const { result, error, isPending } = useFetch(
     `${process.env.REACT_APP_BACKEND_URL}/api/members?search=${debounceSearch}&page=${page}&status=${selectedMemberStatus}`,
   );
+
 
   const statusIndicator = (status) => {
       if (status === "active") return "success";
@@ -92,7 +94,7 @@ const Members = () => {
       startY: 40,
       head: headers,
       body: members.map(member => [
-        member.full_name,
+        `${member.first_name} ${member.last_name}`,
         checkDateofBirth(member.dob),
         `${member.phone}\n${member.email}`,
         member.membership_status
@@ -105,17 +107,13 @@ const Members = () => {
   return (
     <div>
       {/* Page header */}
-      <div className="card border-0 shadow-sm mb-4">
-        <div className="card-body d-flex align-items-center justify-content-between">
-          <div className="">
-            <h2 className="fw-bold mb-1">
-              Member Management
-            </h2>
-            <p className="text-muted mb-0">
-              Manage members, view details, and perform actions related to member management.
-            </p>
-          </div>
-         <button type="button" 
+    
+      <PageHeader 
+      icon="group.png"
+      title="Member Management" 
+      subtitle="Manage members, view details, and perform actions related to member management." 
+      actionButton={
+        <button type="button" 
          className="btn btn-primary btn-sm d-flex gap-2 align-items-center"
          data-bs-toggle="modal" 
          data-bs-target="#staticBackdrop">
@@ -124,15 +122,15 @@ const Members = () => {
           </span>
           Add Member
         </button>
-        </div>
-      </div>
+      }
+      />
 
       {/* SEARCH INPUT */}
       <div className="d-flex mb-3 gap-3">
         <div className="expt">
           <button disabled className="btn btn-success btn-sm">Excel</button>
           <button 
-          disabled={isPending}
+          disabled={isPending || !result || result.data.length === 0}
           onClick={() => exportToPDF(result.data)} 
           className="btn btn-danger btn-sm">PDF</button>
         </div>
@@ -159,7 +157,7 @@ const Members = () => {
         
       <div className="mobile-filter mb-3">
           <button disabled className="btn btn-success btn-sm">Excel</button>
-          <button style={{marginRight: 'auto'}} disabled className="btn btn-danger btn-sm">PDF</button>
+          <button style={{marginRight: 'auto'}} disabled={isPending || !result || result.data.length === 0} className="btn btn-danger btn-sm">PDF</button>
         {filterButtons()}
       </div>
       
@@ -200,7 +198,7 @@ const Members = () => {
                         style={{ width: "40px", height: "40px" }}
                       />
                     </td>
-                    <td><div className="fw-semibold">{member.full_name}</div></td>
+                    <td><div className="fw-semibold">{member.first_name} {member.last_name}</div></td>
                     <td>{checkDateofBirth(member.dob)}</td>
                     {/* <td className="text-capitalize">{member.gender}</td> */}
                     <td>

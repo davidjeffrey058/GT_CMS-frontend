@@ -1,6 +1,7 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import React, { useState, useMemo } from 'react';
+import PageHeader from '../components/pageHeader';
 
 const Finance = () => {
   const [transactions, setTransactions] = useState([
@@ -161,28 +162,12 @@ const Finance = () => {
   return (
     <div className="container-fluid py-4" style={{ backgroundColor: '#f8f9fa', minHeight: '100vh' }}>
       <div className="container">
-        {/* <div className="row mb-4">
-          <div className="col">
-            <h2 className="fw-bold text-dark">
-              <i className="bi bi-cash-stack me-2 text-primary"></i>
-              Financial Management Dashboard
-            </h2>
-            <p className="text-muted">Track tithes, offerings, donations and expenses</p>
-          </div>
-        </div> */}
-
-        <div className="card border-0 shadow-sm mb-4">
-          <div className="card-body">
-            <div className="">
-              <h2 className="fw-bold mb-1">
-                Financial Management Dashboard
-              </h2>
-              <p className="text-muted mb-0">
-               Track tithes, offerings, donations and expenses
-              </p>
-            </div>
-          </div>
-        </div>
+        
+        <PageHeader
+          icon="chart.png"
+          title="Financial Management"
+          subtitle="Track tithes, offerings, donations and expenses"
+        />
 
         {/* Summary Cards */}
         <div className="row g-3 mb-4">

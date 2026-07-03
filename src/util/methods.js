@@ -14,4 +14,10 @@ const setPageTitle = (title, replace = false) => {
     }
 }
 
-export {toggleDrawer, setPageTitle};
+const capitalizeWords = (text) => {
+    return text
+      .toLowerCase()
+      .replace(/\b\w/g, (char) => char.toUpperCase());
+  };
+
+export {toggleDrawer, setPageTitle, capitalizeWords};

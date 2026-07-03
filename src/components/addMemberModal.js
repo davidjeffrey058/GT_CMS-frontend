@@ -2,7 +2,10 @@ import { useState } from "react";
 import { educationalLevels, maritalStatusOptions, departments } from '../util/constants'
 import { useAuthContext } from "../hooks/useAuthContext";
 import ImageUploadPreview from "./imageUploadPreview";
-// import Modal from "./modal";  
+import { capitalizeWords } from "../util/methods";
+import { baptismOptions } from "../util/constants";
+// import DatePicker from "react-datepicker";
+// import "react-datepicker/dist/react-datepicker.css";
 
 const AddMemberModal = () => {
 
@@ -11,7 +14,8 @@ const AddMemberModal = () => {
     const [message, setMessage] = useState("");
 
     const [selectedDepartments, setSelectedDepartments] = useState([]);
-    const [fullName, setFullName] = useState("");
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [gender, setGender] = useState("");
     const [dateOfBirth, setDateOfBirth] = useState("");
@@ -27,7 +31,8 @@ const AddMemberModal = () => {
     // const modalId = "addMemberModal";
 
     const resetForm = () => {
-        setFullName("");
+        setFirstName("");
+        setLastName("");
         setEmail("");
         setGender("");
         setDateOfBirth("");
@@ -76,13 +81,14 @@ const AddMemberModal = () => {
             "Authorization": `Bearer ${user.token}`
           },
           body: JSON.stringify({
-            full_name: fullName,
+            first_name: firstName.trim(),
+            last_name: lastName.trim(),
             dob: dateOfBirth,
             gender,
             phone,
             email,
-            address: residentialAddress,
-            occupation,
+            address: residentialAddress.trim(),
+            occupation: occupation.trim(),
             baptism: {
               status: baptismStatus,
               date: baptismStatus === "none" ? null : dateBaptized
@@ -115,6 +121,7 @@ const AddMemberModal = () => {
       }
     };
 
+ 
     return ( 
         <form onSubmit={handleSubmit}>
           <div className="modal fade" id="staticBackdrop" data-bs-backdrop="static" 
@@ -135,107 +142,126 @@ const AddMemberModal = () => {
 
                   <ImageUploadPreview />
                   <div className="gry">
+
+                    {/* First name and last name */}
                     <div className="row">
-                      {/* full name */}
-                      <div className="col-lg">
-                        <label>Full Name</label>
-                        <input type="text" className="form-control" required  
-                        placeholder="First Name, Middle Name, Surname"
-                        value={fullName}
-                        onChange={(e) =>{
-                          setFullName(e.target.value.toUpperCase());
-                        }}
+                      <div className="col">
+                        <label>First Name</label>
+                        <input type="text" className="form-control" required
+                          placeholder="First Name, Middle Name"
+                          value={firstName}
+                          onChange={(e) => {
+                            setFirstName(capitalizeWords(e.target.value));
+                          }}
                         />
                       </div>
-
-                        {/* Email */}
-                      <div className="col">
-                        <label>Email</label>
-                        <input type="email" className="form-control" required
-                        placeholder="user@example.com"
-                        value={email}
-                        onChange={(e) =>{
-                          setEmail(e.target.value.toLowerCase());
-                        }}
+                      <div className="col-lg">
+                        <label>Last Name</label>
+                        <input type="text" className="form-control" required
+                          placeholder="Last Name"
+                          value={lastName}
+                          onChange={(e) => {
+                            setLastName(capitalizeWords(e.target.value));
+                          }}
                         />
                       </div>
                     </div>
 
+                    {/* gender and dob */}
                     <div className="row">
-                      {/* Gender */}
                       <div className="col">
                           <label>Gender</label>
                           <select className="form-control" required value={gender} onChange={(e) => setGender(e.target.value)}>
                               <option value="">--</option>
-                              <option value="male">MALE</option>
-                              <option value="female">FEMALE</option>
+                              <option value="male">Male</option>
+                              <option value="female">Female</option>
                           </select>
                       </div>
 
-                        {/* Date of Birth */}
                       <div className="col">
                           <label>Date of Birth</label>
                           <input type="date" className="form-control" required value={dateOfBirth}
                             onChange={(e) => setDateOfBirth(e.target.value)}/>
                       </div>
-
-                        {/* Phone number */}
-                      <div className="col-lg">
-                          <label>Phone</label>
-                          <input type="tel" className="form-control" placeholder="Eg. 0200000000"
-                            value={phone} onChange={(e) => setPhone(e.target.value)}/>
-                      </div>
                     </div>
 
+                    {/* email and phone */}
+                    <div className="row">
+                      <div className="col">
+                          <label>Email</label>
+                          <input type="email" className="form-control" required
+                          placeholder="john@example.com"
+                          value={email} 
+                          onChange={(e) => setEmail(e.target.value.toLowerCase().trim())}
+                          />
+                      </div>
+
+                      <div className="col-lg">
+                          <label>Phone</label>
+                          <input type="tel" 
+                          className="form-control" 
+                          required
+                          placeholder="Eg. 0200000000"
+                          value={phone} onChange={(e) => setPhone(e.target.value.trim())}
+                          />
+                      </div>
+                    </div>
+                    
+                    {/* educational level and occupation */}
                     <div className="row">
                       <div className="col">
                           <label>Educational Level</label>
-                          <select className="form-control" required value={educationalLevel}
+                          <select className="form-control text-capitalize"
+                           required value={educationalLevel}
                             onChange={(e) => {
                             const value = e.target.value;
                             if(value === 'undergraduate'){
-                              setOccupation('STUDENT')
+                              setOccupation('Student')
                             }
                             setEducationalLevel(e.target.value)
                             }}>
                               {educationalLevels.map(level => (
-                                  <option key={level} value={level}>{level.toUpperCase()}</option>
+                                  <option className="text-capitalize" key={level} value={level}>{level}</option>
                               ))}
                           </select>
                       </div>
 
-                      {/* Occupation */}
                       <div className="col-lg">
                         <label>Occupation</label>
                         <input type="text" className="form-control" value={occupation} 
-                        onChange={(e) => setOccupation(e.target.value.toUpperCase())}/>
+                        onChange={(e) => setOccupation(capitalizeWords(e.target.value.trim()))}/>
                       </div>
                     </div>
 
+                    {/* Residential Address, baptism status & baptised date */}
                     <div className="row">
                       <div className="col-lg">
                         <label>Residential Address</label>
                         <input type="text" className="form-control" required placeholder="House No., Street, City"
-                          value={residentialAddress} onChange={(e) => setResidentialAddress(e.target.value)}/>
+                          value={residentialAddress} onChange={(e) => setResidentialAddress(e.target.value.trim())}/>
                       </div>
                       
                       <div className="col">
                         <label>Baptism status</label>
-                        <select className="form-control" required value={baptismStatus}
-                          onChange={(e) => setBaptismStatus(e.target.value)}>
-                          <option value="none">Not Baptized</option>
-                          <option value="water">Water Baptized</option>
-                          <option value="holy_ghost">Holy Spirit Baptized</option>
+                        <select className="form-control text-capitalize" 
+                        required 
+                        value={baptismStatus}
+                        onChange={(e) => setBaptismStatus(e.target.value)}
+                        >
+                          {baptismOptions.map((option, index) => (
+                            <option className="text-capitalize" key={index} value={option}>{option}</option>
+                          ))}
                         </select>
                       </div>
 
                       <div className="col">
                         <label>Date Baptized</label>
                         <input type="date" className="form-control"
-                          value={dateBaptized} 
-                          onChange={(e) => setDateBaptized(e.target.value)}
-                          disabled = {baptismStatus.includes("none")}
-                          />
+                        value={dateBaptized} 
+                        onChange={(e) => setDateBaptized(e.target.value)}
+                        disabled = {baptismStatus.includes("none")}
+                        />
+                        
                       </div>
                     </div>
 
@@ -293,6 +319,27 @@ const AddMemberModal = () => {
                         />
                       </div>
                     </div>}
+
+                      {/* family and family relationship */}
+                    <div className="row">
+                      <div className="col-lg">
+                        <label>Family ID</label>
+                        <input type="text" className="form-control"
+                        placeholder="fam_000"
+                        />
+                      </div>
+                      <div className="col-lg">
+                        <label>Family Relationship</label>
+                        <select className="form-control">
+                          <option value="">Select Relationship</option>
+                          <option value="parent">Parent</option>
+                          <option value="child">Son</option>
+                          <option value="daughter">Daughter</option>
+                          <option value="grandparent">Grandparent</option>
+                          <option value="spouse">Spouse</option>
+                        </select>
+                      </div>
+                    </div>
                   </div>
 
                   

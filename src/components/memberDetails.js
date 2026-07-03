@@ -40,7 +40,7 @@ const MemberDetails = ({memberId, resetSelectedMember}) => {
                 <label>Full Name</label>
                 <input type="text" className="form-control" required  
                 placeholder="First Name, Middle Name, Surname"
-                value={memData.full_name}
+                value={memData.first_name + ' ' + memData.last_name}
                 readOnly
                 />
             </div>

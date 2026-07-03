@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import ErrorComponent from "../components/errorComponent";
 import { setPageTitle } from "../util/methods";
-// import "bootstrap/dist/css/bootstrap.min.css";
+import PageHeader from "../components/pageHeader";
+import { eventTypes } from "../util/constants";
 
 const Events = () => {
     useEffect(() => {
@@ -71,29 +72,24 @@ const Events = () => {
   return (
     <div className="container-fluid py-4">
         {/* Page Header */}
-        <div className="card border-0 shadow-sm mb-4">
-          <div className="card-body d-flex align-items-center justify-content-between">
-            <div className="">
-              <h2 className="fw-bold mb-1">
-                Event & Service Management
-              </h2>
-              <p className="text-muted mb-0">
-                Manage church services, crusades, meetings, role assignments,
-                and event reminders.
-              </p>
-            </div>
-            <button class="btn btn-primary d-flex gap-1"
+       
+        <PageHeader
+        icon="time-management.png"
+        title="Event & Service Management"
+        subtitle="Manage church services, crusades, meetings, role assignments, and event reminders."
+        actionButton={
+          <button class="btn btn-primary d-flex gap-1"
             type="button" 
             data-bs-toggle="offcanvas" 
             data-bs-target="#staticBackdrop" 
             aria-controls="staticBackdrop">
-                <span className="material-symbols-outlined">
-                calendar_add_on
-                </span>
-                Create Event
-            </button>
-          </div>
-        </div>
+              <span className="material-symbols-outlined">
+              calendar_add_on
+              </span>
+              Create Event
+          </button>
+        }
+        />
 
         {/* Event List */}
         <div className="">
@@ -298,15 +294,20 @@ const Events = () => {
                         <label className="form-label">Event Type</label>
                         <select
                             name="type"
-                            className="form-select"
+                            className="form-select text-capitalize"
                             value={formData.type}
                             onChange={handleChange}
                         >
-                            <option>Service</option>
+                          {eventTypes.map((type, index) => (
+                            <option className="text-capitalize" key={index} value={type}>
+                              {type}
+                            </option>
+                          ))}
+                            {/* <option>Service</option>
                             <option>Crusade</option>
                             <option>Prayer Meeting</option>
                             <option>Leadership Meeting</option>
-                            <option>Youth Program</option>
+                            <option>Youth Program</option> */}
                         </select>
                         </div>
 

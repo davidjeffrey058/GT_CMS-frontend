@@ -1,5 +1,5 @@
 // components/Sidebar.jsx
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import { toggleDrawer } from '../util/methods';
 
 const navItems = [
@@ -17,14 +17,15 @@ export default function Sidebar() {
          className='material-symbols-outlined close' onClick={toggleDrawer}>
             close
         </span>
-        <div className='d-flex align-items-center gap-2 mb-4'>
+        <Link className='d-flex align-items-center gap-2 mb-4 link' to="/">
             <img style={{
                 width: '50px',
                 aspectRatio: '1',
                 // backgroundColor: '#f0f0f0'
             }} src="/images/logo.png" alt="" />
             <h3>GTCMS</h3>
-        </div>
+        </Link>
+        
         {navItems.map(item => (
             <NavLink 
                 key={item.path}

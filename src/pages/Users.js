@@ -2,6 +2,7 @@ import useFetch from "../hooks/useFetch";
 import { useEffect } from "react";
 import { setPageTitle } from "../util/methods";
 import Modal from "../components/modal";
+import PageHeader from "../components/pageHeader";
 
 const Users = () => {
   useEffect(() => {
@@ -23,28 +24,24 @@ const Users = () => {
 
     return ( 
       <div>
-        <div className="card border-0 shadow-sm mb-4">
-          <div className="card-body d-flex align-items-center justify-content-between">
-            <div>
-              <h2 className="fw-bold mb-1">
-                Users
-              </h2>
-              <p className="text-muted mb-0">
-                Manage system users, roles and access
-              </p>
-            </div>
-            <button type="button" 
+        
+        <PageHeader
+        icon="user.png"
+        title="Users"
+        subtitle="Manage system users, roles and access"
+        actionButton={
+           <button type="button" 
             className="btn btn-primary btn-sm d-flex gap-2 align-items-center"
             data-bs-toggle="modal" 
             data-bs-target={`#${modalTitle}`}
             >
-              <span className="material-symbols-outlined">
-                person_add
-              </span>
-              Add User
-            </button>
-          </div>
-        </div>
+            <span className="material-symbols-outlined">
+              person_add
+            </span>
+            Add User
+          </button>
+        }
+        />
         
 
         <div className="card shadow min-vh-50">
